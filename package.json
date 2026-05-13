@@ -1,9 +1,0 @@
-{
-  "name": "pca-vanilla-static",
-  "version": "1.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "npx -y serve@latest . -l 3000",
-    "build": "mkdir -p dist && cp index.html styles.css app.js mathUtils.js dist/"
-  }
-}
