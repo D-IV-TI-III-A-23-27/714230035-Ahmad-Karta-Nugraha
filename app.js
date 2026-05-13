@@ -1,4 +1,3 @@
-import './index.css';
 import { generateBaseData, computePCA } from './mathUtils.js';
 
 const MAX_POINTS = 1000;
