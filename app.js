@@ -78,6 +78,34 @@ function updateSliderUI(id) {
   els.thumbs[id].style.left = `calc(${pct}% - 5px)`;
 }
 
+function showTooltip(e, content) {
+  els.tooltip.innerHTML = content;
+  els.tooltip.classList.add('visible');
+  moveTooltip(e);
+}
+
+function moveTooltip(e) {
+  const pad = 12;
+  let x = e.clientX + pad;
+  let y = e.clientY + pad;
+
+  // Prevent overflow
+  const box = els.tooltip.getBoundingClientRect();
+  if (x + box.width > window.innerWidth) {
+    x = e.clientX - box.width - pad;
+  }
+  if (y + box.height > window.innerHeight) {
+    y = e.clientY - box.height - pad;
+  }
+
+  els.tooltip.style.left = `${x}px`;
+  els.tooltip.style.top = `${y}px`;
+}
+
+function hideTooltip() {
+  els.tooltip.classList.remove('visible');
+}
+
 // ── GENERATE RATINGS ──
 
 function generateRatings() {
@@ -407,6 +435,32 @@ function renderGraph() {
     g.setAttribute('class', 'user-node-svg');
     g.style.cursor = 'pointer';
 
+    // Click handler to select target user
+    g.addEventListener('click', () => {
+      state.targetUser = u;
+      els.inputs.target.value = u;
+      updateSliderUI('target');
+      update();
+    });
+
+    // Tooltip handlers
+    g.addEventListener('mouseenter', (e) => {
+      const isTargetNode = u === targetUser;
+      const sim = similarities.find(s => s.user === u);
+      const ratingCount = ratings[u].filter(r => r > 0).length;
+      
+      let html = `<strong style="color:var(--cyan);">${USER_EMOJI[u]} ${USER_NAMES[u]}</strong><br/>`;
+      if (isTargetNode) {
+        html += `<span style="color:var(--amber);">⭐ Target User</span><br/>`;
+      } else {
+        html += `Kemiripan: <span style="color:var(--cyan); font-weight:600;">${sim ? sim.score.toFixed(2) : '0.00'}</span><br/>`;
+      }
+      html += `Total Rating: ${ratingCount} item`;
+      showTooltip(e, html);
+    });
+    g.addEventListener('mousemove', moveTooltip);
+    g.addEventListener('mouseleave', hideTooltip);
+
     // Background circle
     const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
     circle.setAttribute('cx', pos.x);
@@ -468,6 +522,28 @@ function renderGraph() {
     const pred = predictions.find(p => p.item === i);
     const isPredicted = pred && pred.isPrediction && pred.score > 0;
     const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    g.style.cursor = 'pointer';
+
+    // Tooltip handlers
+    g.addEventListener('mouseenter', (e) => {
+      const predVal = predictions.find(p => p.item === i);
+      const isPred = predVal && predVal.isPrediction && predVal.score > 0;
+      const targetRating = ratings[targetUser][i];
+      const totalRatings = ratings.filter(row => row[i] > 0).length;
+      
+      let html = `<strong style="color:var(--amber);">${ITEM_EMOJI[i]} ${ITEM_NAMES[i]}</strong><br/>`;
+      if (targetRating > 0) {
+        html += `Rating Target: <span style="color:var(--cyan); font-weight:600;">★ ${targetRating}</span><br/>`;
+      } else if (isPred) {
+        html += `Prediksi: <span style="color:var(--amber); font-weight:600;">★ ${predVal.score.toFixed(1)}</span> (Rekomendasi)<br/>`;
+      } else {
+        html += `<span style="color:#666;">Belum dirating target</span><br/>`;
+      }
+      html += `Dinilai oleh: ${totalRatings} user`;
+      showTooltip(e, html);
+    });
+    g.addEventListener('mousemove', moveTooltip);
+    g.addEventListener('mouseleave', hideTooltip);
 
     // Background rect
     const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
