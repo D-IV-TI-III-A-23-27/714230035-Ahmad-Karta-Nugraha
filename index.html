@@ -221,7 +221,7 @@
           <div style="border-left:3px solid var(--amber); padding-left:20px; margin-bottom:32px;">
             <h3 style="font-family:var(--font-mono); font-size:12px; letter-spacing:0.2em; color:var(--amber); text-transform:uppercase; margin-bottom:12px;">Bagian 2: Tahapan Alur Kerja Komputasi</h3>
             <p style="font-size:14px; color:#ccc; line-height:1.8; margin-bottom:20px;">
-              Meskipun terdengar sederhana secara konseptual, di balik layar komputer menjalankan proses komputasi yang ketat dalam empat tahapan utama:
+              Sistem rekomendasi ini bekerja melalui empat tahapan sederhana:
             </p>
 
             <div style="display:flex; flex-direction:column; gap:16px;">
@@ -229,12 +229,9 @@
               <div style="background:var(--card); border:1px solid var(--border); padding:18px; border-radius:4px; display:flex; gap:16px; align-items:flex-start;">
                 <div style="width:28px; height:28px; border:1px solid var(--cyan); color:var(--cyan); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:12px; font-weight:600; flex-shrink:0;">1</div>
                 <div>
-                  <h4 style="color:#fff; font-size:14px; margin-bottom:4px;">Pemetaan Matriks Hubungan &amp; Masalah Kelangkaan (Sparsity)</h4>
+                  <h4 style="color:#fff; font-size:14px; margin-bottom:4px;">Membuat Matriks Rating (Tabel Data)</h4>
                   <p style="font-size:12px; color:#888; line-height:1.6;">
-                    Komputasi dimulai dengan menyusun seluruh data ke dalam <strong>Matriks Penilaian (Rating Matrix)</strong>. 
-                    Setiap baris mewakili pengguna, dan setiap kolom mewakili produk (film). 
-                    Tantangan terbesar di industri nyata adalah <strong>Kelangkaan (Sparsity)</strong>: sebagian besar pengguna hanya menilai sebagian kecil dari seluruh katalog. 
-                    Di sinilah algoritma ini bekerja, yakni mengisi sel-sel kosong yang belum dinilai oleh pengguna target.
+                    Sistem mengumpulkan data penilaian (rating) yang diberikan pengguna ke dalam tabel. Karena banyak pengguna belum menonton atau menilai semua film, tabel ini akan memiliki banyak kolom kosong. Tugas algoritma adalah menebak nilai untuk kolom kosong tersebut.
                   </p>
                 </div>
               </div>
@@ -243,13 +240,9 @@
               <div style="background:var(--card); border:1px solid var(--border); padding:18px; border-radius:4px; display:flex; gap:16px; align-items:flex-start;">
                 <div style="width:28px; height:28px; border:1px solid var(--cyan); color:var(--cyan); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:12px; font-weight:600; flex-shrink:0;">2</div>
                 <div>
-                  <h4 style="color:#fff; font-size:14px; margin-bottom:4px;">Pengukuran Sudut Selera (Cosine Similarity)</h4>
+                  <h4 style="color:#fff; font-size:14px; margin-bottom:4px;">Menghitung Kemiripan Selera (Cosine Similarity)</h4>
                   <p style="font-size:12px; color:#888; line-height:1.6;">
-                    Untuk membandingkan seberapa mirip Target User dengan user lain, sistem menggunakan metode <strong>Cosine Similarity</strong>. 
-                    Konsepnya adalah dengan membayangkan selera setiap orang sebagai anak panah penunjuk arah di ruang berdimensi banyak. 
-                    Sistem mengabaikan film yang tidak ditonton bersama, lalu mengukur sudut antara anak panah Target User dengan pengguna lainnya. 
-                    Jika kedua panah menunjuk ke arah yang hampir sama, berarti mereka memiliki kemiripan selera yang tinggi (skor mendekati 1.00). 
-                    Kelebihan utama metode sudut ini adalah adil: ia tidak terpengaruh oleh apakah seseorang sangat aktif memberikan rating atau sangat pelit memberikan bintang tinggi.
+                    Sistem membandingkan rating dari Target User dengan pengguna lainnya untuk mencari siapa saja yang seleranya mirip. Dengan metode <strong>Cosine Similarity</strong>, kemiripan dihitung dari skor 0 (tidak mirip sama sekali) hingga 1 (sangat identik/sama persis).
                   </p>
                 </div>
               </div>
@@ -258,11 +251,9 @@
               <div style="background:var(--card); border:1px solid var(--border); padding:18px; border-radius:4px; display:flex; gap:16px; align-items:flex-start;">
                 <div style="width:28px; height:28px; border:1px solid var(--cyan); color:var(--cyan); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:12px; font-weight:600; flex-shrink:0;">3</div>
                 <div>
-                  <h4 style="color:#fff; font-size:14px; margin-bottom:4px;">Penebakan Rating dengan Suara Terbobot (Weighted Average)</h4>
+                  <h4 style="color:#fff; font-size:14px; margin-bottom:4px;">Memprediksi Rating (Rata-rata Terbobot)</h4>
                   <p style="font-size:12px; color:#888; line-height:1.6;">
-                    Setelah skor kemiripan ditemukan, sistem dapat menebak rating film yang belum ditonton oleh Target User. 
-                    Alih-alih sekadar merata-ratakan nilai dari semua orang, sistem menggunakan teknik <strong>Rata-Rata Terbobot (Weighted Average)</strong>. 
-                    Artinya, pendapat dari pengguna yang seleranya terbukti 90% mirip dengan Target User akan diberikan "hak suara" yang jauh lebih besar dan kuat dalam menentukan hasil akhir tebakan dibandingkan pendapat dari pengguna yang tingkat kemiripannya hanya 10%.
+                    Sistem menebak rating untuk film yang belum ditonton oleh Target User. Tebakan ini dihitung berdasarkan rating dari pengguna lain, di mana pendapat dari orang yang seleranya <strong>lebih mirip</strong> akan mendapat porsi pengaruh (bobot) yang lebih besar.
                   </p>
                 </div>
               </div>
@@ -271,11 +262,9 @@
               <div style="background:var(--card); border:1px solid var(--border); padding:18px; border-radius:4px; display:flex; gap:16px; align-items:flex-start;">
                 <div style="width:28px; height:28px; border:1px solid var(--cyan); color:var(--cyan); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:12px; font-weight:600; flex-shrink:0;">4</div>
                 <div>
-                  <h4 style="color:#fff; font-size:14px; margin-bottom:4px;">Kurasi Rekomendasi Teratas (Top-N Recommendation)</h4>
+                  <h4 style="color:#fff; font-size:14px; margin-bottom:4px;">Rekomendasi Terbaik (Top-N)</h4>
                   <p style="font-size:12px; color:#888; line-height:1.6;">
-                    Langkah terakhir adalah melakukan pemfilteran. 
-                    Seluruh film yang belum pernah dinilai oleh pengguna target diurutkan berdasarkan hasil tebakan rating tertinggi ke terendah. 
-                    Hanya beberapa film terbaik dengan tebakan nilai tertinggi (misal, 4 film teratas) yang akan disajikan secara visual sebagai rekomendasi akhir kepada pengguna.
+                    Terakhir, sistem mengurutkan film-film berdasarkan rating tebakan tertinggi yang sudah dihitung. Film dengan tebakan rating terbaik akan langsung disajikan sebagai rekomendasi utama kepada Target User.
                   </p>
                 </div>
               </div>
