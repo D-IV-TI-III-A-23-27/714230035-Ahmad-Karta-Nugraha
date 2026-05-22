@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Presentasi – Visualisasi Algoritma PCA | Ahmad Karta Nugraha</title>
+  <title>Presentasi – Visualisasi Algoritma Collaborative Filtering | Ahmad Karta Nugraha</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -18,6 +18,8 @@
       --dark:   #050505;
       --card:   #0c0c0e;
       --border: #1e1e1e;
+      --amber:  #fbbf24;
+      --amber-dim: rgba(251,191,36,0.15);
       --font-sans: 'Inter', sans-serif;
       --font-serif: 'Playfair Display', serif;
       --font-mono: 'JetBrains Mono', monospace;
@@ -155,7 +157,7 @@
 
     /* ═══════════════════════════
        TYPOGRAPHY HELPERS
-    ═══════════════════════════ */
+     ═══════════════════════════ */
     .label {
       font-family: var(--font-mono);
       font-size: 10px;
@@ -167,7 +169,7 @@
     h1.hero {
       font-family: var(--font-serif);
       font-style: italic;
-      font-size: clamp(2.6rem, 5vw, 4.2rem);
+      font-size: clamp(2.4rem, 4.5vw, 3.8rem);
       font-weight: 700;
       line-height: 1.1;
       color: #fff;
@@ -181,6 +183,7 @@
       margin-bottom: 8px;
     }
     .accent { color: var(--cyan); }
+    .amber { color: var(--amber); }
     p.lead {
       font-size: 1rem;
       line-height: 1.7;
@@ -253,25 +256,8 @@
       font-size: 13px;
       color: #ccc;
     }
-    #s1 .diamond {
-      width: 10px; height: 10px;
-      border: 1px solid var(--cyan);
-      transform: rotate(45deg);
-      margin-right: 6px;
-      display: inline-block;
-      vertical-align: middle;
-    }
-    #s1 .diamond-fill {
-      width: 6px; height: 6px;
-      background: var(--cyan);
-      transform: rotate(45deg);
-      display: inline-block;
-      vertical-align: middle;
-      position: relative;
-      top: -1px;
-    }
 
-    /* ─── SLIDE 2 – APA ITU PCA ─── */
+    /* ─── SLIDE 2 – APA ITU COLLABORATIVE FILTERING ─── */
     #s2 .two-col {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -284,7 +270,7 @@
     #s3 .steps {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 12px;
       width: 100%;
       max-width: 780px;
     }
@@ -292,7 +278,7 @@
       display: flex;
       align-items: flex-start;
       gap: 20px;
-      padding: 18px 22px;
+      padding: 14px 18px;
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 4px;
@@ -319,45 +305,13 @@
       border-radius: 2px;
     }
 
-    /* ─── SLIDE 4 – MATRIKS KOVARIANS ─── */
-    #s4 .matrix-wrap {
+    /* ─── SLIDE 4 – COSINE SIMILARITY ─── */
+    #s4 .concept-wrap {
       display: flex;
       align-items: center;
       gap: 32px;
       flex-wrap: wrap;
       justify-content: center;
-    }
-    #s4 .matrix {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2px;
-      border: 1px solid #333;
-      padding: 2px;
-      background: #111;
-    }
-    #s4 .m-cell {
-      background: var(--card);
-      padding: 14px 18px;
-      text-align: center;
-    }
-    #s4 .m-cell .label2 {
-      font-family: var(--font-mono);
-      font-size: 9px;
-      color: #444;
-      display: block;
-      margin-bottom: 4px;
-    }
-    #s4 .m-cell .val {
-      font-family: var(--font-mono);
-      font-size: 16px;
-      color: var(--cyan);
-    }
-    #s4 .m-cell.off .val { color: #aaa; }
-    .matrix-bracket-left, .matrix-bracket-right {
-      font-size: 80px;
-      color: #333;
-      line-height: 1;
-      font-weight: 100;
     }
     .eq-box {
       background: #0c0c0c;
@@ -377,7 +331,7 @@
       color: #555;
     }
 
-    /* ─── SLIDE 5 – EIGENDECOMPOSITION ─── */
+    /* ─── SLIDE 5 – PREDIKSI & WEIGHTED AVERAGE ─── */
     #s5 .eigen-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -401,26 +355,13 @@
     }
     #s5 .eigen-val {
       font-family: var(--font-mono);
-      font-size: 32px;
+      font-size: 28px;
       font-weight: 500;
     }
     #s5 .eigen-val.pc1 { color: var(--cyan); }
-    #s5 .eigen-val.pc2 { color: #fff; }
+    #s5 .eigen-val.pc2 { color: var(--amber); }
     #s5 .eigen-desc { font-size: 12px; color: #666; margin-top: 8px; line-height: 1.6; }
     #s5 .bar-wrap { margin-top: 16px; }
-    #s5 .bar-track {
-      height: 6px;
-      background: #1a1a1a;
-      border-radius: 3px;
-      overflow: hidden;
-      margin-bottom: 6px;
-    }
-    #s5 .bar-fill { height: 100%; border-radius: 3px; }
-    #s5 .bar-pct {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: #666;
-    }
     #s5 .formula-box {
       grid-column: 1 / -1;
       background: #070709;
@@ -473,18 +414,18 @@
     .feat-card h4 { font-size: 13px; color: #fff; margin-bottom: 6px; }
     .feat-card p  { font-size: 11px; color: #666; line-height: 1.6; }
 
-    /* ─── SLIDE 7 – SCREE PLOT ─── */
+    /* ─── SLIDE 7 – VISUALISASI JARINGAN SVG ─── */
     #s7 .scree-demo {
       display: flex;
       gap: 40px;
-      align-items: flex-end;
+      align-items: center;
       width: 100%;
       max-width: 860px;
       flex-wrap: wrap;
     }
     #s7 .scree-chart {
-      flex: 1;
-      min-width: 280px;
+      flex: 1.2;
+      min-width: 320px;
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 4px;
@@ -498,20 +439,6 @@
       text-transform: uppercase;
       margin-bottom: 20px;
     }
-    #s7 .bars {
-      display: flex;
-      align-items: flex-end;
-      height: 120px;
-      gap: 12px;
-    }
-    .scree-bar-wrap { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-    .scree-bar {
-      width: 48px;
-      border-radius: 2px 2px 0 0;
-      transition: opacity 0.25s;
-    }
-    .scree-bar-label { font-family: var(--font-mono); font-size: 10px; color: #666; }
-    .scree-bar-pct   { font-family: var(--font-mono); font-size: 11px; color: #aaa; }
     #s7 .insight-list {
       flex: 1;
       min-width: 260px;
@@ -574,18 +501,6 @@
       color: var(--cyan);
       word-break: break-all;
     }
-    #s8 .qr-placeholder {
-      width: 120px; height: 120px;
-      border: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      color: #333;
-      font-size: 11px;
-      font-family: var(--font-mono);
-      position: relative;
-      overflow: hidden;
-    }
-    /* QR-like pattern */
-    #s8 .qr-placeholder svg { opacity: 0.5; }
 
     /* ─── SLIDE 9 – KESIMPULAN ─── */
     #s9 .concl-list {
@@ -697,13 +612,13 @@
 
     <h1 class="hero">
       Visualisasi<br/>
-      Algoritma <span class="accent">PCA</span>
+      Algoritma <span class="accent">Collaborative Filtering</span>
     </h1>
 
     <p class="lead">
-      Sebuah aplikasi web interaktif untuk memahami cara kerja
-      <strong style="color:#ccc">Principal Component Analysis</strong>
-      melalui animasi real-time dan kontrol parameter langsung di browser.
+      Sebuah aplikasi web interaktif untuk memvisualisasikan cara kerja
+      <strong style="color:#ccc">Sistem Rekomendasi (User-Based Collaborative Filtering)</strong>
+      menggunakan metode Cosine Similarity secara real-time dan intuitif tanpa library eksternal.
     </p>
 
     <div class="meta">
@@ -721,64 +636,60 @@
       </div>
       <div class="meta-item">
         <span class="meta-key">Versi Aplikasi</span>
-        <span class="meta-val mono" style="color:var(--cyan)">v1.2.4-stable</span>
+        <span class="meta-val mono" style="color:var(--cyan)">v1.5.0-stable</span>
       </div>
     </div>
 
     <div style="margin-top:36px; display:flex; gap:8px; flex-wrap:wrap;">
-      <span class="pill">JavaScript ES Module</span>
-      <span class="pill">SVG Real-time</span>
-      <span class="pill">Tailwind CSS v4</span>
-      <span class="pill">Linear Algebra</span>
+      <span class="pill">User-Based Filtering</span>
+      <span class="pill">Cosine Similarity</span>
+      <span class="pill">SVG Network Graph</span>
+      <span class="pill">Vanilla JS UI</span>
     </div>
   </section>
 
-  <!-- ── SLIDE 2: APA ITU PCA ── -->
+  <!-- ── SLIDE 2: APA ITU COLLABORATIVE FILTERING ── -->
   <section class="slide" id="s2">
     <div class="slide-tag">02 / 10</div>
-    <div class="label" style="align-self:flex-start;">Landasan Teori</div>
-    <h2 class="section-title" style="align-self:flex-start; max-width:600px;">
-      Apa itu <span class="accent">Principal Component Analysis?</span>
+    <div class="label" style="align-self:flex-start;">Konsep Dasar</div>
+    <h2 class="section-title" style="align-self:flex-start; max-width:700px;">
+      Apa itu <span class="accent">Collaborative Filtering?</span>
     </h2>
     <div class="divider"></div>
 
     <div class="two-col">
       <div class="card">
-        <div class="label">Definisi</div>
+        <div class="label">Definisi Sederhana</div>
         <p style="font-size:13px; color:#aaa; line-height:1.8;">
-          PCA adalah teknik statistik untuk <strong style="color:#fff">mereduksi dimensi</strong> data
-          tanpa kehilangan terlalu banyak informasi. Caranya dengan menemukan
-          <em>sumbu koordinat baru</em> yang memaksimalkan varians data.
+          Collaborative Filtering adalah algoritma sistem rekomendasi yang mencari <strong style="color:#fff">pola kesamaan selera</strong> antar pengguna.
+          Ide dasarnya: <em>"Jika User A dan User B memiliki selera film yang mirip di masa lalu, maka film yang disukai User B tetapi belum ditonton oleh User A sangat mungkin akan disukai oleh User A."</em>
         </p>
         <div style="margin-top:16px; padding:14px; background:#0a0a0a; border:1px solid var(--border); border-radius:3px;">
           <span style="font-family:var(--font-mono); font-size:11px; color:var(--gray);">Tujuan Utama</span>
-          <ul style="margin-top:8px; padding-left:16px; font-size:12px; color:#777; line-height:2;">
-            <li>Mengurangi kompleksitas dataset</li>
-            <li>Menghilangkan redundansi antar variabel</li>
-            <li>Memudahkan visualisasi data dimensi tinggi</li>
-            <li>Menekan noise tanpa kehilangan sinyal utama</li>
+          <ul style="margin-top:8px; padding-left:16px; font-size:12px; color:#777; line-height:1.8;">
+            <li>Mengisi kekosongan data rating (prediksi selera)</li>
+            <li>Rekomendasi personal tanpa perlu tau detail item (content-free)</li>
+            <li>Memanfaatkan kecerdasan kolektif (wisdom of the crowd)</li>
           </ul>
         </div>
       </div>
 
       <div class="card">
-        <div class="label">Analogi Sederhana</div>
+        <div class="label">Analogi "Rekomendasi Teman"</div>
         <p style="font-size:13px; color:#aaa; line-height:1.8; margin-bottom:14px;">
-          Bayangkan Anda memotret bayangan sebuah benda 3D.
-          Foto (2D) adalah hasil <em>reduksi dimensi</em> yang masih mempertahankan bentuk esensial benda tersebut.
+          Bayangkan Anda sedang bingung ingin menonton film apa akhir pekan ini.
+          Daripada bertanya ke kritikus film (Content-based), Anda bertanya kepada <strong>teman dekat</strong> yang biasanya memiliki selera film yang mirip dengan Anda.
         </p>
         <p style="font-size:13px; color:#aaa; line-height:1.8;">
-          PCA bekerja persis seperti itu — ia mencari
-          <strong style="color:var(--cyan);">"sudut kamera terbaik"</strong>
-          agar proyeksi yang tersisa mengandung informasi maksimal.
+          Algoritma ini mensimulasikan proses sosial tersebut secara matematis di browser Anda dengan mencari "teman selera" terbaik secara real-time.
         </p>
         <div style="margin-top:16px; display:flex; gap:10px; align-items:center;">
           <div style="flex:1; height:4px; background:var(--cyan); border-radius:2px; opacity:0.9;"></div>
-          <span style="font-family:var(--font-mono); font-size:9px; color:var(--gray); white-space:nowrap;">PC1 (max variance)</span>
+          <span style="font-family:var(--font-mono); font-size:9px; color:var(--gray); white-space:nowrap;">User Kemiripan Tinggi (Tetangga)</span>
         </div>
         <div style="margin-top:6px; display:flex; gap:10px; align-items:center;">
           <div style="flex:1; height:2px; background:#fff; border-radius:2px; opacity:0.4;"></div>
-          <span style="font-family:var(--font-mono); font-size:9px; color:var(--gray); white-space:nowrap;">PC2 (residual)</span>
+          <span style="font-family:var(--font-mono); font-size:9px; color:var(--gray); white-space:nowrap;">User Kemiripan Rendah / Berlawanan</span>
         </div>
       </div>
     </div>
@@ -787,9 +698,9 @@
   <!-- ── SLIDE 3: ALUR ALGORITMA ── -->
   <section class="slide" id="s3">
     <div class="slide-tag">03 / 10</div>
-    <div class="label" style="align-self:flex-start;">Langkah Perhitungan</div>
+    <div class="label" style="align-self:flex-start;">Tahapan Perhitungan</div>
     <h2 class="section-title" style="align-self:flex-start;">
-      Alur <span class="accent">Algoritma PCA</span>
+      Alur Kerja <span class="accent">Sistem Rekomendasi</span>
     </h2>
     <div class="divider"></div>
 
@@ -797,152 +708,117 @@
       <div class="step-row">
         <div class="step-num">01</div>
         <div class="step-body">
-          <h4>Mean Centering — Pusatkan Data</h4>
-          <p>Hitung rata-rata seluruh titik, lalu geser koordinat sehingga centroid berada tepat di (0, 0). Tanpa langkah ini, komponen utama akan bias ke arah mean.</p>
+          <h4>Matriks Rating & Kelangkaan (Sparsity)</h4>
+          <p>Membentuk matriks hubungan antara User (baris) dan Item (kolom). Di dunia nyata, banyak cell kosong (<code>0</code>) karena tidak semua user menilai semua film. Cell kosong inilah yang ingin kita prediksi nilainya.</p>
         </div>
       </div>
 
       <div class="step-row">
         <div class="step-num">02</div>
         <div class="step-body">
-          <h4>Hitung Matriks Kovarians — <code>C</code></h4>
-          <p>Ukur seberapa besar dua dimensi "bergerak bersama". <code>VAR(X)</code>, <code>VAR(Y)</code>, dan <code>COV(X,Y)</code> membentuk matriks simetris 2×2.</p>
+          <h4>Menghitung Kemiripan User (Cosine Similarity)</h4>
+          <p>Membandingkan selera Target User dengan user lainnya murni berdasarkan item yang sama-sama telah mereka beri rating. Hasilnya adalah skor kemiripan antara <code>0.00</code> hingga <code>1.00</code>.</p>
         </div>
       </div>
 
       <div class="step-row">
         <div class="step-num">03</div>
         <div class="step-body">
-          <h4>Eigen-Decomposition — <code>C·v = λ·v</code></h4>
-          <p>Temukan eigenvector (arah komponen utama) dan eigenvalue (besar varians yang dijelaskan). Eigenvalue terbesar → PC1, sisanya → PC2.</p>
+          <h4>Prediksi Rating Terbobot (Weighted Average Prediction)</h4>
+          <p>Untuk mengisi film yang belum dinilai oleh Target User, hitung rata-rata rating film tersebut dari user lain, namun berikan <strong>bobot lebih besar</strong> pada rating milik user yang seleranya terbukti sangat mirip.</p>
         </div>
       </div>
 
       <div class="step-row">
         <div class="step-num">04</div>
         <div class="step-body">
-          <h4>Explained Variance Ratio — <code>λ / Σλ</code></h4>
-          <p>Hitung proporsi informasi setiap komponen. Jika PC1 ≥ 95%, maka PC2 dapat <strong style="color:var(--cyan);">direduksi</strong> dengan kehilangan informasi &lt;5%.</p>
+          <h4>Rekomendasi Teratas (Top-N Recommendation)</h4>
+          <p>Urutkan item-item yang belum ditonton berdasarkan nilai prediksinya yang paling tinggi, lalu sajikan sebagai rekomendasi film terbaik untuk Target User.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ── SLIDE 4: MATRIKS KOVARIANS ── -->
+  <!-- ── SLIDE 4: COSINE SIMILARITY ── -->
   <section class="slide" id="s4">
     <div class="slide-tag">04 / 10</div>
-    <div class="label" style="align-self:flex-start;">Detail Matematis</div>
+    <div class="label" style="align-self:flex-start;">Logika Formula</div>
     <h2 class="section-title" style="align-self:flex-start;">
-      Matriks <span class="accent">Kovarians</span>
+      Mengukur Kemiripan dengan <span class="accent">Cosine Similarity</span>
     </h2>
     <div class="divider"></div>
 
-    <div class="matrix-wrap">
-      <!-- Matrix C -->
+    <div class="concept-wrap">
       <div style="text-align:center;">
-        <div style="font-family:var(--font-mono); font-size:12px; color:var(--gray); margin-bottom:12px; letter-spacing:0.15em;">C = COVARIANCE MATRIX</div>
-        <div style="display:flex; align-items:center; gap:4px; justify-content:center;">
-          <div class="matrix-bracket-left">[</div>
-          <div class="matrix">
-            <div class="m-cell">
-              <span class="label2">VAR(X) = σ²ₓ</span>
-              <span class="val">Cₓₓ</span>
-            </div>
-            <div class="m-cell off">
-              <span class="label2">COV(X,Y)</span>
-              <span class="val">Cₓᵧ</span>
-            </div>
-            <div class="m-cell off">
-              <span class="label2">COV(Y,X)</span>
-              <span class="val">Cᵧₓ</span>
-            </div>
-            <div class="m-cell">
-              <span class="label2">VAR(Y) = σ²ᵧ</span>
-              <span class="val">Cᵧᵧ</span>
-            </div>
-          </div>
-          <div class="matrix-bracket-right">]</div>
+        <div style="font-family:var(--font-mono); font-size:12px; color:var(--gray); margin-bottom:12px; letter-spacing:0.15em;">FORMULA COSINE SIMILARITY</div>
+        <div class="eq-box" style="margin-bottom:16px;">
+          <div class="eq">Sim(A, B) = (A · B) / (||A|| · ||B||)</div>
+          <div class="eq-desc">Menghitung sudut kosinus antara dua vektor rating di ruang berdimensi banyak</div>
         </div>
-        <p style="font-size:11px; color:#555; margin-top:8px; font-family:var(--font-mono);">Simetris: Cₓᵧ = Cᵧₓ</p>
+        <p style="font-size:11px; color:#555; font-family:var(--font-mono); max-width: 480px; margin: 0 auto;">
+          Semakin dekat arah vektor selera A dan B (skor mendekati 1.00), semakin mirip selera mereka. Jika saling tegak lurus (skor 0.00), selera mereka tidak berhubungan.
+        </p>
       </div>
 
-      <div style="display:flex; flex-direction:column; gap:16px; max-width:340px;">
-        <div class="eq-box">
-          <div class="eq">Cₓₓ = Σ(xᵢ − x̄)² / (n−1)</div>
-          <div class="eq-desc">Varians dimensi X — seberapa lebar data tersebar di sumbu X</div>
-        </div>
-        <div class="eq-box">
-          <div class="eq">Cₓᵧ = Σ(xᵢ − x̄)(yᵢ − ȳ) / (n−1)</div>
-          <div class="eq-desc">Kovarians — kekuatan korelasi linier antara X dan Y</div>
+      <div style="display:flex; flex-direction:column; gap:12px; max-width:380px;">
+        <div class="card" style="padding: 16px 20px;">
+          <h4 style="font-size: 13px; margin-bottom: 4px; color: #fff;">Bagaimana ini Dihitung tanpa Ribet?</h4>
+          <p style="font-size:12px; color:#aaa; line-height:1.6;">
+            Aplikasi membandingkan nilai rating film yang sama-sama telah diberi nilai oleh User A dan User B.
+            Perkalian rating diakumulasikan sebagai dot product, lalu dibagi dengan normalisasi panjang rating masing-masing user.
+          </p>
         </div>
         <div style="padding:14px; background:rgba(94,234,212,0.06); border:1px solid rgba(94,234,212,0.2); border-radius:3px;">
-          <p style="font-size:12px; color:#aaa; line-height:1.7;">
-            Kovarians <strong style="color:var(--cyan);">besar</strong> → titik-titik tersusun diagonal → PCA sangat efektif untuk reduksi dimensi.
+          <p style="font-size:11px; color:#aaa; line-height:1.6;">
+            💡 <strong>Keuntungan:</strong> Cosine Similarity sangat tahan terhadap perbedaan jumlah rating yang dibuat oleh pengguna (tidak terpengaruh oleh seberapa aktif seorang user memberikan rating).
           </p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ── SLIDE 5: EIGENDECOMPOSITION ── -->
+  <!-- ── SLIDE 5: PREDIKSI TERBOBOT ── -->
   <section class="slide" id="s5">
     <div class="slide-tag">05 / 10</div>
-    <div class="label" style="align-self:flex-start;">Inti Algoritma</div>
+    <div class="label" style="align-self:flex-start;">Estimasi Rating</div>
     <h2 class="section-title" style="align-self:flex-start;">
-      Eigen-<span class="accent">Decomposition</span>
+      Menghitung <span class="amber">Prediksi Rating</span> Terbobot
     </h2>
     <div class="divider"></div>
 
     <div class="eigen-grid">
       <div class="formula-box">
-        <div class="formula">C · v = λ · v</div>
+        <div class="formula">Prediksi(u, i) = Σ (Sim(u, v) * Rating(v, i)) / Σ Sim(u, v)</div>
         <div class="formula-desc">
-          Matriks kovarians <strong style="color:#aaa;">C</strong> dikalikan vektor eigen <strong style="color:#aaa;">v</strong>
-          menghasilkan vektor yang searah dengan <strong style="color:#aaa;">v</strong> namun berskala sebesar eigenvalue <strong style="color:var(--cyan);">λ</strong>.
-          Ini berarti <strong style="color:var(--cyan);">v</strong> adalah arah di mana data "meregang" sebesar <strong style="color:var(--cyan);">λ</strong>.
+          Prediksi rating target user <strong style="color:#aaa;">u</strong> untuk item <strong style="color:#aaa;">i</strong> dihitung dengan menjumlahkan rating dari user lain <strong style="color:#aaa;">v</strong> yang dikalikan dengan bobot kemiripan <strong style="color:var(--cyan);">Sim(u,v)</strong>, lalu dibagi dengan total kemiripan.
         </div>
       </div>
 
       <div class="eigen-card">
-        <h4>PC1 — Eigenvector Utama</h4>
-        <div class="eigen-val pc1">λ₁ (besar)</div>
+        <h4>Kenapa Harus Memakai Bobot (Weighted)?</h4>
+        <div class="eigen-val pc1">Akurasi & Relevansi</div>
         <div class="eigen-desc">
-          Arah di mana varians data <strong style="color:#ccc;">MAKSIMAL</strong>.
-          Ditampilkan sebagai garis <span style="color:var(--cyan);">Cyan</span> di visualisasi.
-          Mempertahankan informasi terbesar.
-        </div>
-        <div class="bar-wrap">
-          <div class="bar-track">
-            <div class="bar-fill" style="width:75%; background:var(--cyan);"></div>
-          </div>
-          <div class="bar-pct">~75%–95% varians dijelaskan</div>
+          Jika kita hanya merata-ratakan rating biasa tanpa bobot, selera user pengganggu yang sama sekali berbeda dengan kita akan merusak prediksi.
+          Dengan memberikan bobot similarity, rating dari user yang seleranya mirip akan mendominasi hasil akhir.
         </div>
       </div>
 
       <div class="eigen-card">
-        <h4>PC2 — Eigenvector Kedua</h4>
-        <div class="eigen-val pc2">λ₂ (kecil)</div>
+        <h4>Kondisi Penyaringan Tambahan</h4>
+        <div class="eigen-val pc2">Filter Positif</div>
         <div class="eigen-desc">
-          Arah tegak lurus PC1. Menjelaskan sisa varians.
-          Ditampilkan sebagai garis <span style="color:#aaa;">Putih</span> di visualisasi.
-          Kandidat untuk direduksi.
-        </div>
-        <div class="bar-wrap">
-          <div class="bar-track">
-            <div class="bar-fill" style="width:25%; background:#aaa; opacity:0.5;"></div>
-          </div>
-          <div class="bar-pct">~5%–25% varians tersisa</div>
+          Algoritma di aplikasi secara cerdas hanya menyertakan user lain dengan skor kemiripan positif (<code>Similarity > 0</code>) dan user yang memang telah memberikan penilaian terhadap film tersebut untuk menjaga kualitas prediksi.
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ── SLIDE 6: FITUR APLIKASI ── -->
+  <!-- ── SLIDE 6: FITUR UTAMA APLIKASI ── -->
   <section class="slide" id="s6">
     <div class="slide-tag">06 / 10</div>
-    <div class="label" style="align-self:flex-start;">Implementasi</div>
+    <div class="label" style="align-self:flex-start;">Fitur Utama</div>
     <h2 class="section-title" style="align-self:flex-start;">
-      Fitur <span class="accent">Aplikasi</span>
+      Fungsionalitas <span class="accent">Aplikasi Rekomendasi</span>
     </h2>
     <div class="divider"></div>
 
@@ -950,86 +826,89 @@
       <div class="feat-card">
         <div class="feat-icon">⚙️</div>
         <div>
-          <h4>Kontrol Parameter Real-time</h4>
-          <p>4 slider interaktif: <strong>Density</strong> (10–1000 pts), <strong>Spread X</strong>, <strong>Spread Y</strong>, dan <strong>Rotation α</strong> (−90° hingga +90°). Grafik diperbarui seketika tanpa reload.</p>
+          <h4>Sliders Parameter Interaktif</h4>
+          <p>Kontrol langsung jumlah user (3-8), jumlah film (3-8), tingkat kelangkaan rating (10%-90%), dan pemilihan target user yang ingin diberikan rekomendasi secara real-time.</p>
         </div>
       </div>
 
       <div class="feat-card">
         <div class="feat-icon">📊</div>
         <div>
-          <h4>Visualisasi SVG Dinamis</h4>
-          <p>Ribuan titik data Gaussian dirender via SVG langsung di DOM. Eigenvector ditampilkan sebagai panah beranimasi dengan <em>marker-end</em> yang berubah sesuai parameter.</p>
+          <h4>Tabel Rating Dinamis</h4>
+          <p>Menampilkan matriks rating secara real-time. Membedakan visual antara rating asli (warna solid) dengan rating hasil prediksi cerdas (warna kuning bersinar) dengan transisi mulus.</p>
         </div>
       </div>
 
       <div class="feat-card">
-        <div class="feat-icon">🔢</div>
+        <div class="feat-icon">🤝</div>
         <div>
-          <h4>Panel Eigen-Decomposition</h4>
-          <p>Menampilkan nilai eigenvalue λ₁ dan λ₂, persentase explained variance PC1 & PC2, serta bar chart mini (Scree Plot) yang diupdate secara live.</p>
+          <h4>Panel Tingkat Kemiripan</h4>
+          <p>Daftar user lain yang diurutkan otomatis berdasarkan kemiripannya dengan target user, dilengkapi visual progress bar berkode warna (hijau, kuning, orange, merah).</p>
         </div>
       </div>
 
       <div class="feat-card">
-        <div class="feat-icon">📐</div>
+        <div class="feat-icon">🎯</div>
         <div>
-          <h4>Tabel Matriks Kovarians</h4>
-          <p>Nilai <code style="background:#111; color:var(--cyan); padding:1px 4px; font-family:var(--font-mono); font-size:10px;">VAR(X)</code>, <code style="background:#111; color:var(--cyan); padding:1px 4px; font-family:var(--font-mono); font-size:10px;">VAR(Y)</code>, dan <code style="background:#111; color:var(--cyan); padding:1px 4px; font-family:var(--font-mono); font-size:10px;">COV(X,Y)</code> tampil live di panel bawah layar.</p>
+          <h4>Rekomendasi Teratas (Top-4)</h4>
+          <p>Menyajikan film rekomendasi terbaik untuk target user secara personal lengkap dengan skor bintang (★) dan indikasi pendukung kenapa film tersebut direkomendasikan.</p>
         </div>
       </div>
 
       <div class="feat-card">
         <div class="feat-icon">🔄</div>
         <div>
-          <h4>Recalculate / Reseed Data</h4>
-          <p>Tombol <em>"Recalculate Projections"</em> men-generate ulang 1000 sampel Gaussian acak baru, sehingga pengguna dapat mengamati stabilitas PCA pada berbagai sampel.</p>
+          <h4>Simulasi Ulang Instan</h4>
+          <p>Tombol <em>"Generate Acak Baru"</em> untuk mensimulasikan ulang matriks rating baru dengan parameter yang sama untuk menguji keandalan algoritma di berbagai kondisi data.</p>
         </div>
       </div>
 
       <div class="feat-card">
         <div class="feat-icon">📖</div>
         <div>
-          <h4>Halaman Penjelasan</h4>
-          <p>Tab "Penjelasan" berisi narasi edukatif tentang konsep PCA: definisi, langkah algoritma, cara membaca grafik, dan interpretasi Scree Plot — tanpa perlu meninggalkan aplikasi.</p>
+          <h4>Tab Penjelasan Teori</h4>
+          <p>Halaman penjelasan interaktif terintegrasi di dalam aplikasi yang menerangkan alur matematika dasar di balik Collaborative Filtering langsung di layar aplikasi.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ── SLIDE 7: SCREE PLOT & INTERPRETASI ── -->
+  <!-- ── SLIDE 7: VISUALISASI JARINGAN SVG ── -->
   <section class="slide" id="s7">
     <div class="slide-tag">07 / 10</div>
-    <div class="label" style="align-self:flex-start;">Analisis Hasil</div>
+    <div class="label" style="align-self:flex-start;">Analisis Visual</div>
     <h2 class="section-title" style="align-self:flex-start;">
-      Membaca <span class="accent">Scree Plot</span> & Explained Variance
+      Memahami <span class="accent">SVG Network Graph</span>
     </h2>
     <div class="divider"></div>
 
     <div class="scree-demo">
-      <div class="scree-chart" style="min-width:320px;">
-        <div class="chart-title">Contoh: Spread X=8, Spread Y=1, Rotation=30°</div>
-        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:4px;">
-          <span style="font-family:var(--font-mono); font-size:9px; color:#444;">100%</span>
-          <span style="font-family:var(--font-mono); font-size:9px; color:#444;">0%</span>
-        </div>
-        <div class="bars">
-          <div class="scree-bar-wrap">
-            <div class="scree-bar-pct">94.3%</div>
-            <div class="scree-bar" style="height:113px; background:var(--cyan); opacity:0.85;"></div>
-            <div class="scree-bar-label">PC1</div>
-          </div>
-          <div class="scree-bar-wrap">
-            <div class="scree-bar-pct">5.7%</div>
-            <div class="scree-bar" style="height:7px; background:var(--cyan); opacity:0.3;"></div>
-            <div class="scree-bar-label">PC2</div>
-          </div>
-        </div>
-        <div style="margin-top:16px; padding:12px; background:#0a0a0a; border:1px solid #1a1a1a; border-radius:3px;">
-          <p style="font-family:var(--font-mono); font-size:10px; color:#666;">
-            λ₁ / (λ₁ + λ₂) = <span style="color:var(--cyan);">0.943</span><br/>
-            λ₂ / (λ₁ + λ₂) = <span style="color:#aaa;">0.057</span>
-          </p>
+      <div class="scree-chart" style="min-width:320px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;">
+        <div class="chart-title">Arti Elemen Visual Jaringan</div>
+        <!-- Decorative simple graphic representing user nodes, item nodes, lines and arcs -->
+        <svg width="240" height="140" viewBox="0 0 240 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Target user -->
+          <circle cx="50" cy="70" r="18" stroke="#fbbf24" stroke-width="2" fill="#000"/>
+          <text x="50" y="70" text-anchor="middle" dominant-baseline="central" fill="#fbbf24" font-size="9">Target</text>
+          
+          <!-- Sim user -->
+          <circle cx="50" cy="25" r="14" stroke="#333" stroke-width="1" fill="#000"/>
+          <text x="50" y="25" text-anchor="middle" dominant-baseline="central" fill="#888" font-size="9">User B</text>
+          
+          <!-- Similarity arc -->
+          <path d="M 50 70 Q 20 47 50 25" fill="none" stroke="#5eead4" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <text x="25" y="47" fill="#5eead4" font-size="8" font-family="monospace">Sim(0.85)</text>
+
+          <!-- Film item -->
+          <rect x="170" y="50" width="36" height="36" rx="4" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="3 2" fill="#000"/>
+          <text x="188" y="68" text-anchor="middle" dominant-baseline="central" fill="#fbbf24" font-size="9">Film A</text>
+
+          <!-- Connection -->
+          <line x1="68" y1="70" x2="170" y2="68" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="5 3"/>
+          <text x="119" y="60" fill="#fbbf24" font-size="8" font-family="monospace">Prediksi ★4.2</text>
+        </svg>
+        <div style="font-size:10px; color:#555; font-family:var(--font-mono); text-align: center;">
+          Grafik dinamis ini digambar secara real-time berdasarkan state aplikasi.
         </div>
       </div>
 
@@ -1037,80 +916,71 @@
         <div class="insight-row">
           <div class="insight-icon">◆</div>
           <div class="insight-text">
-            <strong>PC1 ≥ 95%</strong> → PC2 bisa dihapus (reduksi ke 1D) dengan kehilangan &lt;5% informasi. Cocok untuk data memanjang.
+            <strong>Garis Hijau &amp; Amber Solid</strong> → Menunjukkan rating nyata yang diberikan user kepada film. Semakin tebal garis, semakin tinggi skor ratingnya.
           </div>
         </div>
         <div class="insight-row">
           <div class="insight-icon">◆</div>
           <div class="insight-text">
-            <strong>PC1 ≈ 50%</strong> → data berbentuk melingkar / isotropis. Kedua komponen sama pentingnya, reduksi tidak disarankan.
+            <strong>Busur Melengkung Putus-Putus</strong> → Menunjukkan hubungan kesamaan (similarity) antara target user dengan user lainnya. Semakin tebal, semakin mirip seleranya.
           </div>
         </div>
         <div class="insight-row">
           <div class="insight-icon">◆</div>
           <div class="insight-text">
-            <strong>Rotation α naik</strong> → korelasi antara X dan Y bertambah → Cₓᵧ membesar → eigenvector PC1 berputar mengikuti arah data.
-          </div>
-        </div>
-        <div class="insight-row">
-          <div class="insight-icon">◆</div>
-          <div class="insight-text">
-            <strong>Density rendah</strong> → eigenvalue tidak stabil antar reseed. Density tinggi → hasil lebih konsisten dan terprediksi.
+            <strong>Garis Putus-Putus Beranimasi</strong> → Menunjukkan jalur prediksi rekomendasi dari target user ke film yang belum pernah ditontonnya, memberikan efek aliran data yang dinamis.
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ── SLIDE 8: ARSITEKTUR TEKNIS ── -->
+  <!-- ── SLIDE 8: ARSITEKTUR KODE ── -->
   <section class="slide" id="s8">
     <div class="slide-tag">08 / 10</div>
     <div class="label" style="align-self:flex-start;">Arsitektur Teknis</div>
     <h2 class="section-title" style="align-self:flex-start;">
-      Implementasi <span class="accent">Kode</span>
+      Arsitektur &amp; <span class="accent">Implementasi Kode</span>
     </h2>
     <div class="divider"></div>
 
     <div class="demo-grid">
       <div>
-        <div style="font-family:var(--font-mono); font-size:10px; color:var(--gray); letter-spacing:0.2em; text-transform:uppercase; margin-bottom:12px;">Struktur File</div>
-        <div style="background:var(--card); border:1px solid var(--border); border-radius:4px; padding:20px; font-family:var(--font-mono); font-size:12px; line-height:2; color:#aaa;">
-          <div><span style="color:var(--cyan);">📄</span> index.html &nbsp;<span style="color:#444; font-size:10px;">— UI &amp; Layout</span></div>
-          <div><span style="color:var(--cyan);">📄</span> app.js &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#444; font-size:10px;">— State &amp; Rendering</span></div>
-          <div><span style="color:var(--cyan);">📄</span> mathUtils.js &nbsp;<span style="color:#444; font-size:10px;">— PCA Engine</span></div>
-          <div><span style="color:var(--cyan);">📄</span> styles.css &nbsp;&nbsp;<span style="color:#444; font-size:10px;">— Custom Styles</span></div>
+        <div style="font-family:var(--font-mono); font-size:10px; color:var(--gray); letter-spacing:0.2em; text-transform:uppercase; margin-bottom:12px;">Struktur File Minimalis</div>
+        <div style="background:var(--card); border:1px solid var(--border); border-radius:4px; padding:16px 20px; font-family:var(--font-mono); font-size:12px; line-height:2; color:#aaa;">
+          <div><span style="color:var(--cyan);">📄</span> index.html &nbsp;<span style="color:#444; font-size:10px;">— Markup UI &amp; Panel Layout</span></div>
+          <div><span style="color:var(--cyan);">📄</span> app.js &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#444; font-size:10px;">— State, Algoritma CF, &amp; SVG Drawer</span></div>
+          <div><span style="color:var(--cyan);">📄</span> styles.css &nbsp;&nbsp;<span style="color:#444; font-size:10px;">— Style Premium &amp; Animasi Glow</span></div>
         </div>
 
-        <div style="margin-top:16px; font-family:var(--font-mono); font-size:10px; color:var(--gray); letter-spacing:0.2em; text-transform:uppercase; margin-bottom:12px;">Fungsi Kunci</div>
+        <div style="margin-top:16px; font-family:var(--font-mono); font-size:10px; color:var(--gray); letter-spacing:0.2em; text-transform:uppercase; margin-bottom:12px;">Fungsi Utama di app.js</div>
         <div class="param-list">
           <div class="param-item">
-            <div class="param-name">generateBaseData(n)</div>
-            <div class="param-desc">Generate n sampel distribusi Gaussian menggunakan metode Box-Muller transform.</div>
+            <div class="param-name">cosineSimilarity(vecA, vecB)</div>
+            <div class="param-desc">Membandingkan dua array rating user secara numerik hanya pada item yang sama-sama dinilai.</div>
           </div>
           <div class="param-item">
-            <div class="param-name">computePCA(data)</div>
-            <div class="param-desc">Hitung mean, matriks kovarians, eigenvalue, dan eigenvector secara analitik (tanpa library eksternal).</div>
+            <div class="param-name">predictRatings()</div>
+            <div class="param-desc">Melakukan weighted average atas seluruh user similarity untuk menebak rating film kosong.</div>
           </div>
           <div class="param-item">
-            <div class="param-name">updateView(data, pca)</div>
-            <div class="param-desc">Render ulang seluruh SVG, panel angka, dan bar chart berdasarkan hasil PCA terbaru.</div>
+            <div class="param-name">renderGraph()</div>
+            <div class="param-desc">Menggunakan koordinat dinamis untuk menggambar user, item, dan garis relasi SVG real-time.</div>
           </div>
         </div>
       </div>
 
       <div>
-        <div style="font-family:var(--font-mono); font-size:10px; color:var(--gray); letter-spacing:0.2em; text-transform:uppercase; margin-bottom:12px;">Demo Aplikasi</div>
+        <div style="font-family:var(--font-mono); font-size:10px; color:var(--gray); letter-spacing:0.2em; text-transform:uppercase; margin-bottom:12px;">Akses Demo Aplikasi</div>
         <div class="qr-box" style="height:100%;">
-          <div style="font-size:11px; color:#555; font-family:var(--font-mono);">AKSES LANGSUNG</div>
+          <div style="font-size:11px; color:#555; font-family:var(--font-mono);">PUBLIKASI GITHUB PAGES</div>
           <svg width="140" height="140" viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:0.7;">
-            <!-- QR-like decorative boxes -->
             <rect x="10" y="10" width="40" height="40" rx="3" stroke="#5eead4" stroke-width="2" fill="none"/>
             <rect x="18" y="18" width="24" height="24" rx="1" fill="#5eead4" fill-opacity="0.3"/>
             <rect x="90" y="10" width="40" height="40" rx="3" stroke="#5eead4" stroke-width="2" fill="none"/>
             <rect x="98" y="18" width="24" height="24" rx="1" fill="#5eead4" fill-opacity="0.3"/>
             <rect x="10" y="90" width="40" height="40" rx="3" stroke="#5eead4" stroke-width="2" fill="none"/>
             <rect x="18" y="98" width="24" height="24" rx="1" fill="#5eead4" fill-opacity="0.3"/>
-            <!-- dots -->
             <rect x="60" y="14" width="6" height="6" fill="#5eead4" fill-opacity="0.5"/>
             <rect x="70" y="14" width="6" height="6" fill="#5eead4" fill-opacity="0.3"/>
             <rect x="60" y="24" width="6" height="6" fill="#5eead4" fill-opacity="0.3"/>
@@ -1136,7 +1006,7 @@
             <rect x="94" y="94" width="36" height="36" rx="2" fill="#5eead4" fill-opacity="0.08" stroke="#5eead4" stroke-width="1" stroke-dasharray="3 2"/>
           </svg>
           <div class="url">d-iv-ti-iii-a-23-27.github.io<br/>714230035-Ahmad-Karta-Nugraha/</div>
-          <div style="font-size:10px; color:#555; font-family:var(--font-mono);">Buka di browser untuk demo langsung</div>
+          <div style="font-size:10px; color:#555; font-family:var(--font-mono); margin-top: 4px;">Buka repositori GitHub untuk demo aplikasi</div>
         </div>
       </div>
     </div>
@@ -1145,9 +1015,9 @@
   <!-- ── SLIDE 9: KESIMPULAN ── -->
   <section class="slide" id="s9">
     <div class="slide-tag">09 / 10</div>
-    <div class="label" style="align-self:flex-start;">Penutup</div>
+    <div class="label" style="align-self:flex-start;">Kesimpulan</div>
     <h2 class="section-title" style="align-self:flex-start;">
-      <span class="accent">Kesimpulan</span>
+      <span class="accent">Kesimpulan Utama</span>
     </h2>
     <div class="divider"></div>
 
@@ -1155,31 +1025,25 @@
       <div class="concl-item">
         <div class="concl-num">01</div>
         <div class="concl-text">
-          PCA adalah algoritma reduksi dimensi berbasis <strong>aljabar linear</strong> yang menemukan sumbu baru (principal components) sejajar dengan arah varians terbesar dalam data.
+          <strong>Collaborative Filtering</strong> adalah algoritma sosiometris yang sangat kuat karena mampu menghasilkan rekomendasi personal bermutu tinggi murni berdasarkan data interaksi pengguna lain, tanpa perlu menganalisis konten barangnya.
         </div>
       </div>
       <div class="concl-item">
         <div class="concl-num">02</div>
         <div class="concl-text">
-          Aplikasi ini berhasil mengimplementasikan <strong>seluruh pipeline PCA</strong> — dari distribusi Gaussian, mean centering, matriks kovarians, hingga eigen-decomposition — murni menggunakan JavaScript tanpa library.
+          Penggunaan <strong>Cosine Similarity</strong> terbukti efektif mengukur kemiripan antar user karena fokus pada rasio arah ketertarikan item daripada besaran nilai mutlak yang diberikan user.
         </div>
       </div>
       <div class="concl-item">
         <div class="concl-num">03</div>
         <div class="concl-text">
-          Melalui visualisasi interaktif, pengguna dapat secara langsung mengamati bahwa <strong>Rotation (korelasi)</strong> adalah faktor utama yang menentukan efektivitas PCA sebagai teknik reduksi.
+          Aplikasi ini berhasil membuktikan bahwa proses komputasi yang rumit seperti pengisian matriks renggang (sparse matrix) dan similarity dapat divisualisasikan dengan <strong>sangat intuitif</strong> menggunakan web murni (HTML, CSS, Vanilla JS, SVG).
         </div>
       </div>
       <div class="concl-item">
         <div class="concl-num">04</div>
         <div class="concl-text">
-          Ketika <strong>Explained Variance PC1 ≥ 95%</strong>, reduksi ke satu dimensi dapat dilakukan dengan kehilangan informasi minimal — ini adalah inti kegunaan PCA di dunia nyata (Computer Vision, NLP, Bioinformatika).
-        </div>
-      </div>
-      <div class="concl-item">
-        <div class="concl-num">05</div>
-        <div class="concl-text">
-          Proyek ini menunjukkan bahwa konsep matematis abstrak dapat disajikan secara <strong>intuitif dan interaktif</strong> melalui web modern dengan teknik rendering SVG real-time.
+          Interaktivitas kontrol parameter (Users, Items, Sparsity) membantu pengguna memahami langsung problem nyata sistem rekomendasi di industri, seperti masalah data yang terlalu renggang (cold start / sparsity issue).
         </div>
       </div>
     </div>
@@ -1194,8 +1058,8 @@
     </div>
 
     <div class="label" style="text-align:center; margin-bottom:16px;">Terima Kasih</div>
-    <h1 class="hero" style="font-size:clamp(2.2rem,4vw,3.6rem); text-align:center; max-width:680px;">
-      Visualisasi Algoritma <span class="accent">PCA</span>
+    <h1 class="hero" style="font-size:clamp(2.0rem,3.8vw,3.2rem); text-align:center; max-width:760px;">
+      Sistem Rekomendasi <span class="accent">Collaborative Filtering</span>
     </h1>
 
     <div class="tagline" style="margin-top:16px;">
@@ -1203,11 +1067,11 @@
     </div>
 
     <div style="margin-top:40px; display:flex; gap:20px; flex-wrap:wrap; justify-content:center; align-items:center;">
-      <a href="./index.html" style="padding:12px 28px; background:var(--cyan); color:#000; font-family:var(--font-mono); font-size:12px; text-decoration:none; letter-spacing:0.1em; border-radius:2px; transition:opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
-        Buka Aplikasi →
+      <a href="../index.html" style="padding:12px 28px; background:var(--cyan); color:#000; font-family:var(--font-mono); font-size:12px; text-decoration:none; letter-spacing:0.1em; border-radius:2px; transition:opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+        Buka Aplikasi Rekomendasi →
       </a>
       <div style="padding:12px 28px; border:1px solid var(--border); font-family:var(--font-mono); font-size:11px; color:var(--gray); letter-spacing:0.1em; border-radius:2px;">
-        v1.2.4-stable
+        v1.5.0-stable
       </div>
     </div>
 
