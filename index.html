@@ -183,87 +183,141 @@
       <!-- View: Penjelasan -->
       <div id="view-penjelasan" class="explain-view">
         <div class="explain-container">
-          <h2>Mengenal Collaborative Filtering</h2>
-          
-          <p>
-            <strong>Collaborative Filtering</strong> adalah algoritma sistem rekomendasi yang memprediksi 
-            apa yang mungkin disukai seseorang berdasarkan preferensi orang lain yang memiliki selera serupa. 
-            Inilah teknologi di balik rekomendasi Netflix, Spotify, dan Amazon.
+          <h2 style="font-family:var(--font-serif); font-style:italic; font-size:2.2rem; color:#fff; margin-bottom:8px;">
+            Bedah Mendalam Algoritma <span style="color:var(--cyan);">Collaborative Filtering</span>
+          </h2>
+          <p style="font-size:1.1rem; color:#aaa; line-height:1.7; margin-bottom:24px;">
+            Memahami bagaimana mesin mempelajari pola keintiman selera sosial manusia murni menggunakan kecerdasan kolektif.
           </p>
 
-          <div class="explain-highlight">
-            <p>
-              💡 <strong>Analogi Sederhana:</strong> Bayangkan kamu dan temanmu sama-sama suka film A, B, dan C. 
-              Lalu temanmu juga suka film D yang belum kamu tonton. 
-              Sistem akan merekomendasikan film D untukmu karena kalian punya selera yang mirip!
+          <!-- BAGIAN 1: PARADIGMA ALGORITMA -->
+          <div style="border-left:3px solid var(--cyan); padding-left:20px; margin-bottom:32px;">
+            <h3 style="font-family:var(--font-mono); font-size:12px; letter-spacing:0.2em; color:var(--cyan); text-transform:uppercase; margin-bottom:12px;">Bagian 1: Paradigma Utama Algoritma</h3>
+            <p style="font-size:14px; color:#ccc; line-height:1.8; margin-bottom:16px;">
+              Algoritma yang digunakan dalam aplikasi ini adalah <strong>User-Based Collaborative Filtering (UBCF)</strong>. 
+              Pendekatan ini berpegang pada sebuah asumsi sosial: manusia yang memiliki kemiripan ketertarikan di masa lalu, cenderung akan menyukai hal yang sama di masa depan.
             </p>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:16px;">
+              <div class="card" style="padding:16px 20px;">
+                <span style="font-family:var(--font-mono); font-size:10px; color:var(--gray);">PENDEKATAN TANPA KONTEN (CONTENT-FREE)</span>
+                <p style="font-size:12px; color:#aaa; line-height:1.7; margin-top:8px;">
+                  Sistem ini tidak perlu mengetahui informasi fisik tentang barang (seperti genre film, nama aktor, sutradara, atau tahun rilis). 
+                  Satu-satunya data yang dipelajari mesin adalah <strong>sejarah angka penilaian (rating)</strong> yang diberikan pengguna. 
+                  Ini membuatnya sangat fleksibel untuk diterapkan pada barang apa saja.
+                </p>
+              </div>
+              <div class="card" style="padding:16px 20px;">
+                <span style="font-family:var(--font-mono); font-size:10px; color:var(--gray);">USER-BASED VS ITEM-BASED</span>
+                <p style="font-size:12px; color:#aaa; line-height:1.7; margin-top:8px;">
+                  Berbeda dengan <em>Item-Based</em> yang mencari kemiripan antar produk (misal: membandingkan kemiripan film horor A dengan film horor B), 
+                  pendekatan <em>User-Based</em> di aplikasi ini berfokus sepenuhnya untuk mencari <strong>kemiripan antar manusia</strong>. 
+                  Sistem berupaya membangun "kelompok pertemanan selera" di sekitar Target User secara otomatis.
+                </p>
+              </div>
+            </div>
           </div>
 
-          <h3>Bagaimana Cara Kerjanya?</h3>
-          <ol>
-            <li>
-              <strong>Kumpulkan Data Rating:</strong> Sistem mengumpulkan rating/penilaian yang diberikan 
-              setiap pengguna terhadap item (film, lagu, produk). Hasilnya berupa tabel (matriks) 
-              User × Item yang berisi nilai rating 1-5, dengan beberapa sel yang kosong (belum dirating).
-            </li>
-            <li>
-              <strong>Cari User yang Mirip:</strong> Untuk memprediksi rating User A, sistem mencari 
-              pengguna lain yang punya pola rating mirip dengan User A. 
-              Kemiripan diukur dengan melihat item-item yang sama-sama sudah di-rating.
-              Semakin mirip polanya, semakin tinggi <em>similarity score</em>-nya (0 sampai 1).
-            </li>
-            <li>
-              <strong>Prediksi Rating:</strong> Untuk item yang belum di-rating User A, sistem melihat 
-              rating yang diberikan user-user mirip terhadap item tersebut. 
-              Rating user yang lebih mirip diberi bobot lebih besar.
-            </li>
-            <li>
-              <strong>Berikan Rekomendasi:</strong> Item-item dengan prediksi rating tertinggi 
-              direkomendasikan kepada User A. Itulah mengapa Netflix bisa menyarankan film yang 
-              kemungkinan besar akan kamu sukai!
-            </li>
-          </ol>
+          <!-- BAGIAN 2: DETAIL TAHAPAN KOMPUTASI -->
+          <div style="border-left:3px solid var(--amber); padding-left:20px; margin-bottom:32px;">
+            <h3 style="font-family:var(--font-mono); font-size:12px; letter-spacing:0.2em; color:var(--amber); text-transform:uppercase; margin-bottom:12px;">Bagian 2: Tahapan Alur Kerja Komputasi</h3>
+            <p style="font-size:14px; color:#ccc; line-height:1.8; margin-bottom:20px;">
+              Meskipun terdengar sederhana secara konseptual, di balik layar komputer menjalankan proses komputasi yang ketat dalam empat tahapan utama:
+            </p>
 
-          <h3>Membaca Visualisasi</h3>
-          <ul>
-            <li>
-              <strong>Node Kiri (User):</strong> Setiap lingkaran di sisi kiri merepresentasikan seorang user. 
-              User target (yang ingin diberi rekomendasi) ditandai dengan warna kuning.
-            </li>
-            <li>
-              <strong>Node Kanan (Item):</strong> Setiap kotak di sisi kanan merepresentasikan item 
-              (film/lagu/produk). Garis yang menghubungkan user ke item menandakan user tersebut 
-              sudah memberikan rating.
-            </li>
-            <li>
-              <strong>Ketebalan Garis:</strong> Semakin tebal garis antara user dan item, semakin tinggi 
-              rating yang diberikan.
-            </li>
-            <li>
-              <strong>Garis Putus-putus Kuning:</strong> Menunjukkan prediksi rekomendasi — item yang 
-              belum di-rating oleh user target tapi diprediksi akan disukai berdasarkan user lain yang mirip.
-            </li>
-            <li>
-              <strong>Similarity Bar:</strong> Di sidebar kiri, bar chart menunjukkan seberapa mirip 
-              setiap user dengan user target. Semakin panjang bar = semakin mirip.
-            </li>
-          </ul>
+            <div style="display:flex; flex-direction:column; gap:16px;">
+              <!-- Tahap 1 -->
+              <div style="background:var(--card); border:1px solid var(--border); padding:18px; border-radius:4px; display:flex; gap:16px; align-items:flex-start;">
+                <div style="width:28px; height:28px; border:1px solid var(--cyan); color:var(--cyan); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:12px; font-weight:600; flex-shrink:0;">1</div>
+                <div>
+                  <h4 style="color:#fff; font-size:14px; margin-bottom:4px;">Pemetaan Matriks Hubungan &amp; Masalah Kelangkaan (Sparsity)</h4>
+                  <p style="font-size:12px; color:#888; line-height:1.6;">
+                    Komputasi dimulai dengan menyusun seluruh data ke dalam <strong>Matriks Penilaian (Rating Matrix)</strong>. 
+                    Setiap baris mewakili pengguna, dan setiap kolom mewakili produk (film). 
+                    Tantangan terbesar di industri nyata adalah <strong>Kelangkaan (Sparsity)</strong>: sebagian besar pengguna hanya menilai sebagian kecil dari seluruh katalog. 
+                    Di sinilah algoritma ini bekerja, yakni mengisi sel-sel kosong yang belum dinilai oleh pengguna target.
+                  </p>
+                </div>
+              </div>
 
-          <h3>Istilah-istilah Penting</h3>
-          <ul>
-            <li><strong>User-based CF:</strong> Mencari user mirip lalu menggunakan rating mereka untuk prediksi. Ini yang divisualisasikan di aplikasi ini.</li>
-            <li><strong>Item-based CF:</strong> Alih-alih mencari user mirip, mencari item yang mirip berdasarkan pola rating semua user.</li>
-            <li><strong>Sparsity (Kelangkaan):</strong> Persentase rating yang kosong. Semakin tinggi sparsity, semakin sulit merekomendasikan karena data yang tersedia sedikit.</li>
-            <li><strong>Cold Start Problem:</strong> Masalah saat user baru belum punya rating sama sekali, sehingga sistem kesulitan mencari user yang mirip.</li>
-          </ul>
+              <!-- Tahap 2 -->
+              <div style="background:var(--card); border:1px solid var(--border); padding:18px; border-radius:4px; display:flex; gap:16px; align-items:flex-start;">
+                <div style="width:28px; height:28px; border:1px solid var(--cyan); color:var(--cyan); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:12px; font-weight:600; flex-shrink:0;">2</div>
+                <div>
+                  <h4 style="color:#fff; font-size:14px; margin-bottom:4px;">Pengukuran Sudut Selera (Cosine Similarity)</h4>
+                  <p style="font-size:12px; color:#888; line-height:1.6;">
+                    Untuk membandingkan seberapa mirip Target User dengan user lain, sistem menggunakan metode <strong>Cosine Similarity</strong>. 
+                    Konsepnya adalah dengan membayangkan selera setiap orang sebagai anak panah penunjuk arah di ruang berdimensi banyak. 
+                    Sistem mengabaikan film yang tidak ditonton bersama, lalu mengukur sudut antara anak panah Target User dengan pengguna lainnya. 
+                    Jika kedua panah menunjuk ke arah yang hampir sama, berarti mereka memiliki kemiripan selera yang tinggi (skor mendekati 1.00). 
+                    Kelebihan utama metode sudut ini adalah adil: ia tidak terpengaruh oleh apakah seseorang sangat aktif memberikan rating atau sangat pelit memberikan bintang tinggi.
+                  </p>
+                </div>
+              </div>
 
-          <h3>Contoh Penggunaan di Dunia Nyata</h3>
-          <ul>
-            <li>🎬 <strong>Netflix:</strong> "Karena kamu menonton Breaking Bad, mungkin kamu suka Narcos"</li>
-            <li>🎵 <strong>Spotify:</strong> Playlist "Discover Weekly" yang dibuat berdasarkan user dengan selera musik serupa</li>
-            <li>🛒 <strong>Amazon / Shopee:</strong> "Pelanggan yang membeli ini juga membeli..."</li>
-            <li>📱 <strong>TikTok / YouTube:</strong> Algoritma For You Page yang mempelajari preferensi dari pola tontonan user lain</li>
-          </ul>
+              <!-- Tahap 3 -->
+              <div style="background:var(--card); border:1px solid var(--border); padding:18px; border-radius:4px; display:flex; gap:16px; align-items:flex-start;">
+                <div style="width:28px; height:28px; border:1px solid var(--cyan); color:var(--cyan); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:12px; font-weight:600; flex-shrink:0;">3</div>
+                <div>
+                  <h4 style="color:#fff; font-size:14px; margin-bottom:4px;">Penebakan Rating dengan Suara Terbobot (Weighted Average)</h4>
+                  <p style="font-size:12px; color:#888; line-height:1.6;">
+                    Setelah skor kemiripan ditemukan, sistem dapat menebak rating film yang belum ditonton oleh Target User. 
+                    Alih-alih sekadar merata-ratakan nilai dari semua orang, sistem menggunakan teknik <strong>Rata-Rata Terbobot (Weighted Average)</strong>. 
+                    Artinya, pendapat dari pengguna yang seleranya terbukti 90% mirip dengan Target User akan diberikan "hak suara" yang jauh lebih besar dan kuat dalam menentukan hasil akhir tebakan dibandingkan pendapat dari pengguna yang tingkat kemiripannya hanya 10%.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Tahap 4 -->
+              <div style="background:var(--card); border:1px solid var(--border); padding:18px; border-radius:4px; display:flex; gap:16px; align-items:flex-start;">
+                <div style="width:28px; height:28px; border:1px solid var(--cyan); color:var(--cyan); border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:12px; font-weight:600; flex-shrink:0;">4</div>
+                <div>
+                  <h4 style="color:#fff; font-size:14px; margin-bottom:4px;">Kurasi Rekomendasi Teratas (Top-N Recommendation)</h4>
+                  <p style="font-size:12px; color:#888; line-height:1.6;">
+                    Langkah terakhir adalah melakukan pemfilteran. 
+                    Seluruh film yang belum pernah dinilai oleh pengguna target diurutkan berdasarkan hasil tebakan rating tertinggi ke terendah. 
+                    Hanya beberapa film terbaik dengan tebakan nilai tertinggi (misal, 4 film teratas) yang akan disajikan secara visual sebagai rekomendasi akhir kepada pengguna.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BAGIAN 3: TANTANGAN INDUSTRI -->
+          <div style="border-left:3px solid var(--gray); padding-left:20px; margin-bottom:32px;">
+            <h3 style="font-family:var(--font-mono); font-size:12px; letter-spacing:0.2em; color:var(--gray); text-transform:uppercase; margin-bottom:12px;">Bagian 3: Tantangan Algoritma di Industri Nyata</h3>
+            <p style="font-size:14px; color:#ccc; line-height:1.8; margin-bottom:16px;">
+              Meskipun sangat populer, algoritma ini memiliki keterbatasan mendasar yang terus dipecahkan oleh para insinyur data di dunia nyata:
+            </p>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+              <div class="card" style="padding:16px 20px;">
+                <h4 style="color:#fff; font-size:13px; margin-bottom:6px;">Masalah Pengguna Baru (Cold Start)</h4>
+                <p style="font-size:11px; color:#666; line-height:1.6;">
+                  Ketika ada pengguna baru yang mendaftar ke aplikasi dan belum memberikan satu pun penilaian (rating), algoritma tidak dapat menemukan "tetangga" selera yang mirip. 
+                  Sistem mengalami kebutaan rekomendasi. Solusi industri biasanya memaksa pengguna baru untuk memilih beberapa film favorit atau kategori di awal pembuatan akun untuk memicu data awal.
+                </p>
+              </div>
+              <div class="card" style="padding:16px 20px;">
+                <h4 style="color:#fff; font-size:13px; margin-bottom:6px;">Beban Skala Komputasi (Scalability)</h4>
+                <p style="font-size:11px; color:#666; line-height:1.6;">
+                  Mencari kesamaan antar pengguna di browser secara real-time sangat mudah untuk 8 orang. 
+                  Namun, ketika basis pengguna mencapai 200 juta orang (seperti Netflix) dan katalog film mencapai puluhan ribu, menghitung kesamaan setiap orang satu per satu di server akan memakan waktu terlalu lama. 
+                  Di industri, ini diatasi dengan pemrosesan berkala (offline batch) atau teknik kompresi dimensi matriks.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- BAGIAN 4: PANDUAN INTERAKTIF -->
+          <div style="background:rgba(94,234,212,0.02); border:1px dashed var(--cyan); padding:20px; border-radius:4px;">
+            <h3 style="font-family:var(--font-mono); font-size:11px; color:var(--cyan); text-transform:uppercase; margin-bottom:10px; letter-spacing:0.1em;">💡 Panduan Singkat Membaca Visualisasi Grafis</h3>
+            <ul style="font-size:12px; color:#aaa; line-height:1.8; padding-left:16px;">
+              <li><strong>Node Lingkaran (Kiri)</strong>: Merepresentasikan pengguna aplikasi. Pengguna target yang sedang dicari rekomendasinya akan berwarna kuning menyala.</li>
+              <li><strong>Node Kotak (Kanan)</strong>: Merepresentasikan film. Ikon emoji mempermudah pemetaan visual.</li>
+              <li><strong>Garis Relasi Lurus</strong>: Menandakan rating asli yang diberikan oleh user. Semakin tebal garis lurus tersebut, semakin tinggi nilai rating (1 hingga 5 bintang) yang diberikan.</li>
+              <li><strong>Busur Melengkung Putus-Putus (Sisi Kiri)</strong>: Menghubungkan target user dengan user lain. Semakin tebal busur tersebut, semakin mirip selera kedua user tersebut (Cosine Similarity tinggi).</li>
+              <li><strong>Garis Putus-Putus Beranimasi</strong>: Menunjukkan jalur rekomendasi aktif. Jalur ini mengalir dari target user menuju film yang belum ditontonnya, yang diprediksi oleh mesin akan ia sukai.</li>
+            </ul>
+          </div>
         </div>
       </div>
 
