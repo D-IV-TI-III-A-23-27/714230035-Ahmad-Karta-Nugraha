@@ -1,255 +1,288 @@
 <!doctype html>
-<html lang="en">
+<html lang="id">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Visualisasi Algoritma PCA</title>
-    <!-- Tailwind CSS (via CDN) -->
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <style type="text/tailwindcss">
-      @theme {
-        --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-        --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
-        --font-serif: "Playfair Display", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-      }
-    </style>
+    <title>Visualisasi Algoritma Collaborative Filtering</title>
+    <meta name="description" content="Aplikasi web interaktif untuk memahami cara kerja algoritma Collaborative Filtering - sistem rekomendasi berbasis kesamaan pengguna" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <div class="w-full h-screen bg-[#050505] text-[#e0e0e0] font-sans flex flex-col overflow-hidden">
-      <header class="h-16 border-b border-[#222] px-8 flex items-center justify-between bg-[#080808] shrink-0">
-        <div class="flex items-center gap-4">
-          <div class="w-8 h-8 border border-[#5eead4] rotate-45 flex items-center justify-center">
-            <div class="w-4 h-4 bg-[#5eead4]"></div>
+    <div class="app-container">
+      <!-- Header -->
+      <header class="app-header">
+        <div class="app-logo">
+          <div class="logo-icon">
+            <div class="logo-icon-inner"></div>
           </div>
-          <h1 class="font-serif italic text-2xl tracking-tight text-[#fff]">Visualisasi Algoritma PCA</h1>
+          <h1 class="app-title">Collaborative Filtering</h1>
         </div>
-        <div class="flex items-center gap-6 text-[11px] uppercase tracking-widest text-[#666]">
-          <button id="nav-vis" class="text-[#5eead4] hover:text-white transition-colors cursor-pointer">Visualisasi</button>
-          <button id="nav-exp" class="hover:text-white transition-colors cursor-pointer">Penjelasan</button>
-          <span class="hidden md:inline px-2 py-1 border border-[#333] rounded">v1.2.4-stable</span>
+        <div class="nav-tabs">
+          <button id="nav-vis" class="nav-tab active">Visualisasi</button>
+          <button id="nav-exp" class="nav-tab">Penjelasan</button>
+          <span class="version-badge">v1.0.0</span>
         </div>
       </header>
 
       <!-- View: Visualisasi -->
-      <main id="view-visualisasi" class="flex-1 flex overflow-hidden flex-col md:flex-row">
-        <div class="w-full md:w-72 border-r border-[#222] bg-[#080808] flex flex-col p-6 overflow-y-auto shrink-0">
-          <section class="mb-8">
-            <h2 class="font-serif italic text-xs uppercase tracking-[0.2em] text-[#888] mb-4">Input Parameters</h2>
-            <div class="space-y-6">
-              
-              <!-- Density -->
-              <div class="space-y-2">
-                <div class="flex justify-between text-[11px] font-mono">
-                  <span>Density</span>
-                  <span id="label-points">200 pts</span>
-                </div>
-                <div class="relative h-1 bg-[#1a1a1a] rounded-full group cursor-pointer flex items-center">
-                  <div id="track-points" class="absolute h-full bg-[#5eead4] rounded-full pointer-events-none" style="width: 20%"></div>
-                  <input id="input-points" type="range" min="10" max="1000" step="10" value="200" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-                  <div id="thumb-points" class="absolute w-2 h-2 bg-white rounded-full pointer-events-none shadow-[0_0_4px_rgba(94,234,212,0.8)]" style="left: calc(20% - 4px)"></div>
-                </div>
-              </div>
+      <div id="view-visualisasi" class="main-area">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+          <!-- Pengaturan -->
+          <div class="sidebar-section">
+            <h2 class="sidebar-title">Pengaturan</h2>
 
-              <!-- Spread X -->
-              <div class="space-y-2">
-                <div class="flex justify-between text-[11px] font-mono">
-                  <span>Spread X</span>
-                  <span id="label-spreadx">5</span>
-                </div>
-                <div class="relative h-1 bg-[#1a1a1a] rounded-full group cursor-pointer flex items-center">
-                  <div id="track-spreadx" class="absolute h-full bg-[#5eead4] rounded-full pointer-events-none" style="width: 32.8%"></div>
-                  <input id="input-spreadx" type="range" min="0.1" max="15" step="0.1" value="5" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-                  <div id="thumb-spreadx" class="absolute w-2 h-2 bg-white rounded-full pointer-events-none shadow-[0_0_4px_rgba(94,234,212,0.8)]" style="left: calc(32.8% - 4px)"></div>
-                </div>
+            <!-- Jumlah User -->
+            <div class="slider-group">
+              <div class="slider-header">
+                <span>Jumlah User</span>
+                <span id="label-users">6</span>
               </div>
-
-              <!-- Spread Y -->
-              <div class="space-y-2">
-                <div class="flex justify-between text-[11px] font-mono">
-                  <span>Spread Y</span>
-                  <span id="label-spready">2</span>
-                </div>
-                <div class="relative h-1 bg-[#1a1a1a] rounded-full group cursor-pointer flex items-center">
-                  <div id="track-spready" class="absolute h-full bg-[#5eead4] rounded-full pointer-events-none" style="width: 12.7%"></div>
-                  <input id="input-spready" type="range" min="0.1" max="15" step="0.1" value="2" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-                  <div id="thumb-spready" class="absolute w-2 h-2 bg-white rounded-full pointer-events-none shadow-[0_0_4px_rgba(94,234,212,0.8)]" style="left: calc(12.7% - 4px)"></div>
-                </div>
-              </div>
-
-              <!-- Rotation -->
-              <div class="space-y-2">
-                <div class="flex justify-between text-[11px] font-mono">
-                  <span>Rotation α</span>
-                  <span id="label-rotation">30°</span>
-                </div>
-                <div class="relative h-1 bg-[#1a1a1a] rounded-full group cursor-pointer flex items-center">
-                  <div id="track-rotation" class="absolute h-full bg-[#5eead4] rounded-full pointer-events-none" style="width: 66.6%"></div>
-                  <input id="input-rotation" type="range" min="-90" max="90" step="1" value="30" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
-                  <div id="thumb-rotation" class="absolute w-2 h-2 bg-white rounded-full pointer-events-none shadow-[0_0_4px_rgba(94,234,212,0.8)]" style="left: calc(66.6% - 4px)"></div>
-                </div>
-              </div>
-
-            </div>
-          </section>
-
-          <section class="mb-8">
-            <h2 class="font-serif italic text-xs uppercase tracking-[0.2em] text-[#888] mb-4">Eigen-Decomposition</h2>
-            <div class="bg-[#0c0c0c] border border-[#222] p-4 rounded-sm">
-              <div class="mb-4">
-                <div class="text-[10px] text-[#555] mb-1 font-mono uppercase">Eigenvalues (λ)</div>
-                <div class="flex items-baseline gap-2">
-                  <span id="val-pc1" class="text-lg font-mono text-[#5eead4]">0.000</span>
-                  <span class="text-xs text-[#444]">PC1</span>
-                </div>
-                <div class="flex items-baseline gap-2">
-                  <span id="val-pc2" class="text-lg font-mono text-[#fff]">0.000</span>
-                  <span class="text-xs text-[#444]">PC2</span>
-                </div>
-              </div>
-              <div class="pt-4 border-t border-[#1a1a1a]">
-                <div class="text-[10px] text-[#555] mb-2 font-mono uppercase">Explained Variance</div>
-                <div class="flex gap-1 h-8">
-                  <div id="bar-pc1" class="bg-[#5eead4] opacity-80 h-full transition-all duration-300" style="width: 50%"></div>
-                  <div id="bar-pc2" class="bg-[#5eead4] opacity-30 h-full transition-all duration-300" style="width: 50%"></div>
-                </div>
-                <div class="flex justify-between text-[10px] font-mono mt-1">
-                  <span id="perc-pc1">50.0%</span>
-                  <span id="perc-pc2">50.0%</span>
-                </div>
+              <div class="slider-track">
+                <div id="track-users" class="slider-fill" style="width:50%"></div>
+                <input id="input-users" type="range" min="3" max="8" step="1" value="6" class="slider-input" />
+                <div id="thumb-users" class="slider-thumb" style="left:calc(50% - 5px)"></div>
               </div>
             </div>
-          </section>
 
-          <div class="mt-auto pt-4">
-            <button id="btn-recalculate" class="w-full py-3 bg-[#5eead4] text-[#000] font-serif italic text-sm hover:brightness-110 transition-all cursor-pointer">
-              Recalculate Projections
+            <!-- Jumlah Item -->
+            <div class="slider-group">
+              <div class="slider-header">
+                <span>Jumlah Item</span>
+                <span id="label-items">5</span>
+              </div>
+              <div class="slider-track">
+                <div id="track-items" class="slider-fill" style="width:50%"></div>
+                <input id="input-items" type="range" min="3" max="8" step="1" value="5" class="slider-input" />
+                <div id="thumb-items" class="slider-thumb" style="left:calc(50% - 5px)"></div>
+              </div>
+            </div>
+
+            <!-- Kelangkaan Rating -->
+            <div class="slider-group">
+              <div class="slider-header">
+                <span>Kelangkaan Rating</span>
+                <span id="label-sparsity">30%</span>
+              </div>
+              <div class="slider-track">
+                <div id="track-sparsity" class="slider-fill" style="width:30%"></div>
+                <input id="input-sparsity" type="range" min="10" max="60" step="5" value="30" class="slider-input" />
+                <div id="thumb-sparsity" class="slider-thumb" style="left:calc(30% - 5px)"></div>
+              </div>
+            </div>
+
+            <!-- Target User -->
+            <div class="slider-group">
+              <div class="slider-header">
+                <span>Target User</span>
+                <span id="label-target">User A</span>
+              </div>
+              <div class="slider-track">
+                <div id="track-target" class="slider-fill" style="width:0%"></div>
+                <input id="input-target" type="range" min="0" max="5" step="1" value="0" class="slider-input" />
+                <div id="thumb-target" class="slider-thumb" style="left:calc(0% - 5px)"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Similarity Score -->
+          <div class="sidebar-section">
+            <h2 class="sidebar-title">Similarity Score</h2>
+            <div id="similarity-panel" class="similarity-panel">
+              <!-- Diisi oleh JavaScript -->
+            </div>
+          </div>
+
+          <!-- Step Flow -->
+          <div class="sidebar-section">
+            <h2 class="sidebar-title">Alur Proses</h2>
+            <div id="step-flow" class="step-flow" style="flex-direction:column;">
+              <div class="step-badge active" data-step="1">
+                <span class="step-num">1</span>
+                <span>Kumpulkan Rating</span>
+              </div>
+              <div class="step-badge" data-step="2">
+                <span class="step-num">2</span>
+                <span>Hitung Kemiripan</span>
+              </div>
+              <div class="step-badge" data-step="3">
+                <span class="step-num">3</span>
+                <span>Prediksi & Rekomendasikan</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Button -->
+          <div style="margin-top:auto; padding-top:16px;">
+            <button id="btn-regenerate" class="btn-primary">
+              Generate Data Baru
             </button>
           </div>
-        </div>
+        </aside>
 
-        <div class="flex-1 bg-[#050505] relative flex flex-col min-h-[400px]">
-          <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(#222 1px, transparent 1px); background-size: 20px 20px;"></div>
-          <div class="flex-1 relative flex items-center justify-center p-4 sm:p-12">
-            <svg 
-              viewBox="-50 -50 100 100"
-              class="w-full h-full max-w-4xl max-h-[600px] overflow-visible drop-shadow-xl"
-            >
+        <!-- Content -->
+        <div class="content-area">
+          <div class="dot-bg"></div>
+
+          <!-- Visualization Canvas -->
+          <div class="viz-canvas">
+            <svg id="graph-svg" class="graph-svg" viewBox="0 0 700 420">
               <defs>
-                <marker id="arrow-cyan" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                  <path d="M 0 0 L 10 5 L 0 10 z" fill="#5eead4" />
-                </marker>
-                <marker id="arrow-white" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                  <path d="M 0 0 L 10 5 L 0 10 z" fill="#ffffff" />
-                </marker>
+                <linearGradient id="grad-cyan" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#5eead4" stop-opacity="0.7"/>
+                  <stop offset="100%" stop-color="#5eead4" stop-opacity="0.15"/>
+                </linearGradient>
+                <linearGradient id="grad-amber" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.7"/>
+                  <stop offset="100%" stop-color="#fbbf24" stop-opacity="0.15"/>
+                </linearGradient>
+                <filter id="glow-cyan">
+                  <feGaussianBlur stdDeviation="3" result="blur"/>
+                  <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+                </filter>
+                <filter id="glow-amber">
+                  <feGaussianBlur stdDeviation="3" result="blur"/>
+                  <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+                </filter>
               </defs>
-
-              <!-- Axes -->
-              <line x1="-50" y1="0" x2="50" y2="0" stroke="#222" stroke-width="0.5" stroke-dasharray="2" />
-              <line x1="0" y1="-50" x2="0" y2="50" stroke="#222" stroke-width="0.5" stroke-dasharray="2" />
-
-              <!-- Data Points Container -->
-              <g id="svg-points" class="transition-opacity duration-300"></g>
-
-              <!-- Eigenvector 1 (Cyan) -->
-              <g>
-                <line id="line-pc1-fwd" stroke="#5eead4" stroke-width="0.8" marker-end="url(#arrow-cyan)" class="transition-all duration-300 ease-out" />
-                <line id="line-pc1-bwd" stroke="#5eead4" stroke-width="0.8" stroke-dasharray="1 1" class="transition-all duration-300 ease-out opacity-30" />
-              </g>
-
-              <!-- Eigenvector 2 (Whiteish) -->
-              <g>
-                <line id="line-pc2-fwd" stroke="#ffffff" stroke-width="0.5" opacity="0.8" marker-end="url(#arrow-white)" class="transition-all duration-300 ease-out" />
-                <line id="line-pc2-bwd" stroke="#ffffff" stroke-width="0.5" stroke-dasharray="1 1" class="transition-all duration-300 ease-out opacity-30" />
-              </g>
-
-              <circle id="mean-dot" r="1.5" fill="#ffffff" class="shadow-glow" />
+              <!-- Connection lines group -->
+              <g id="svg-connections"></g>
+              <!-- User nodes group -->
+              <g id="svg-users"></g>
+              <!-- Item nodes group -->
+              <g id="svg-items"></g>
+              <!-- Labels -->
+              <text x="120" y="20" fill="#555" font-family="'JetBrains Mono'" font-size="10" letter-spacing="0.15em" text-anchor="middle">USERS</text>
+              <text x="560" y="20" fill="#555" font-family="'JetBrains Mono'" font-size="10" letter-spacing="0.15em" text-anchor="middle">ITEMS</text>
             </svg>
           </div>
-          
-          <div class="h-48 border-t border-[#222] grid grid-cols-2 bg-[#080808] shrink-0">
-            <div class="border-r border-[#222] p-4 sm:p-6 overflow-y-auto">
-              <h3 class="text-[10px] text-[#555] font-mono uppercase mb-4">Covariance Matrix (C)</h3>
-              <div class="font-mono text-sm grid grid-cols-2 gap-2 sm:gap-4 max-w-xs">
-                <div class="p-2 border border-[#1a1a1a] bg-[#0c0c0c] flex flex-col">
-                  <span class="text-[9px] text-[#444] mb-1">VAR(X)</span>
-                  <span id="val-cxx">0.000</span>
-                </div>
-                <div class="p-2 border border-[#1a1a1a] bg-[#0c0c0c] flex flex-col">
-                  <span class="text-[9px] text-[#444] mb-1">COV(X,Y)</span>
-                  <span id="val-cxy1">0.000</span>
-                </div>
-                <div class="p-2 border border-[#1a1a1a] bg-[#0c0c0c] flex flex-col">
-                  <span class="text-[9px] text-[#444] mb-1">COV(Y,X)</span>
-                  <span id="val-cxy2">0.000</span>
-                </div>
-                <div class="p-2 border border-[#1a1a1a] bg-[#0c0c0c] flex flex-col">
-                  <span class="text-[9px] text-[#444] mb-1">VAR(Y)</span>
-                  <span id="val-cyy">0.000</span>
-                </div>
+
+          <!-- Bottom Panel -->
+          <div class="bottom-panel">
+            <!-- Rating Matrix -->
+            <div class="bottom-section">
+              <h3 class="bottom-title">Rating Matrix</h3>
+              <div class="matrix-container">
+                <table id="rating-table" class="rating-matrix">
+                  <!-- Diisi oleh JavaScript -->
+                </table>
               </div>
             </div>
-            <div class="p-4 sm:p-6 overflow-y-auto">
-              <h3 class="text-[10px] text-[#555] font-mono uppercase mb-4">Mathematical Proof</h3>
-              <div class="text-[#777] font-serif italic space-y-2">
-                <p class="text-sm text-[#bbb]">C v = λ v</p>
-                <p class="text-xs leading-relaxed opacity-70">The transformation of the covariance matrix by the primary eigenvector yields a scalar projection proportional to the eigenvalue, representing the line of maximum information density.</p>
+
+            <!-- Recommendations -->
+            <div class="bottom-section">
+              <h3 class="bottom-title">Rekomendasi untuk <span id="rec-target-name" style="color:var(--amber);">User A</span></h3>
+              <div id="rec-list" class="rec-list">
+                <!-- Diisi oleh JavaScript -->
               </div>
             </div>
           </div>
         </div>
-      </main>
+      </div>
 
       <!-- View: Penjelasan -->
-      <main id="view-penjelasan" class="flex-1 overflow-y-auto p-4 sm:p-12 bg-[#050505] hidden">
-        <div class="max-w-3xl mx-auto border border-[#222] bg-[#0a0a0c] p-6 sm:p-10 rounded shadow-2xl">
-          <h2 class="text-3xl font-serif italic text-white mb-6">Mengenal Principal Component Analysis (PCA)</h2>
-          <div class="space-y-6 text-[#ccc] leading-relaxed text-sm sm:text-base">
-            <p>
-              <strong class="text-[#5eead4]">Principal Component Analysis (PCA)</strong> adalah teknik transformasi statistik yang digunakan untuk menyederhanakan data kompleks tanpa kehilangan terlalu banyak informasi penting (varians). Dalam istilah teknis, proses ini disebut <em>reduksi dimensi</em>.
-            </p>
-            <p>
-              Bayangkan Anda memiliki dataset dengan puluhan atau ratusan variabel. Sangat sulit untuk divisualisasikan atau diproses. PCA mengatasi ini dengan cara menemukan sumbu koordinat baru (Principal Components) yang merangkum variasi data terbesar.
-            </p>
-            
-            <h3 class="text-xl font-serif italic mt-8 mb-3 text-white border-b border-[#222] pb-2">Bagaimana Cara Kerja Algoritma Ini?</h3>
-            <ol class="list-decimal pl-5 space-y-4">
-              <li><strong>Pusatkan Data (Mean Centering):</strong> Algoritma mencari rata-rata (mean) dari semua titik dan menggeser pusat data tepat di titik asal koordinat (0,0).</li>
-              <li><strong>Hitung Matriks Kovarians:</strong> Algoritma menghitung seberapa kuat dependensi antara dimensi X dan Y. Nilai kovarians yang tinggi berarti pergerakan pada satu sumbu selalu diikuti pergerakan pola lurus di sumbu lain.</li>
-              <li><strong>Penguraian Eigen (Eigen-Decomposition):</strong> Melalui perhitungan aljabar linear <code class="bg-[#111] px-1 py-0.5 rounded text-[#5eead4] text-xs">C * v = λ * v</code>, matriks kovarians dipecah untuk menemukan dua hal:
-                <ul class="list-disc pl-5 mt-2 space-y-2 text-[#999]">
-                  <li><strong>Eigenvectors (Vektor Arah):</strong> Garis baru yang tegak lurus satu sama lain.
-                    <br><span class="text-[#5eead4]">— Garis utama (Cyan)</span> disebut PC1 merepresentasikan arah di mana data menyebar paling lebar (informasi maksimal).
-                    <br><span class="text-white">— Garis kedua (Putih)</span> disebut PC2 merepresentasikan sisa varian setelah mengabaikan PC1.
-                  </li>
-                  <li><strong>Eigenvalues (Skala λ):</strong> Panjang vektor yang mewakili seberapa besar "varians data" yang dijelaskan oleh tiap vektor arah.</li>
-                </ul>
-              </li>
-            </ol>
-            
-            <h3 class="text-xl font-serif italic mt-8 mb-3 text-white border-b border-[#222] pb-2">Membaca Grafik di Visualisasi</h3>
-            <ul class="list-disc pl-5 space-y-3">
-              <li><strong>Density:</strong> Mengatur seberapa ramai sampel titik data. Anda akan melihat bahwa dengan titik yang sangat sedikit, pengukuran eigenvalue menjadi tidak stabil dibanding saat populasinya padat.</li>
-              <li><strong>Spread X & Y:</strong> Mengatur seberapa lebar data terdistribusi secara independen.</li>
-              <li><strong>Rotation:</strong> Memberikan efek korelasi buatan pada x dan y. Saat Anda menambah rotasi, PC1 (Garis Cyan) akan otomatis melacak arah baru dari jangkauan titik data terluas.</li>
-              <li><strong>Scree Plot / Explained Variance:</strong> Persentase (%) di sidebar kiri menunjukan <code class="bg-[#111] px-1 py-0.5 rounded text-xs text-[#5eead4]">λ / (Sum λ)</code>, hal ini menentukan rasio penyederhanaan. Jika dominasi PC1 mencapai &gt;95%, maka variabel PCA kedua (PC2) dapat dihapus (direduksi) dengan kehilangan informasi (loss) sangat minimal &lt;5%.</li>
-            </ul>
-          </div>
-        </div>
-      </main>
+      <div id="view-penjelasan" class="explain-view">
+        <div class="explain-container">
+          <h2>Mengenal Collaborative Filtering</h2>
+          
+          <p>
+            <strong>Collaborative Filtering</strong> adalah algoritma sistem rekomendasi yang memprediksi 
+            apa yang mungkin disukai seseorang berdasarkan preferensi orang lain yang memiliki selera serupa. 
+            Inilah teknologi di balik rekomendasi Netflix, Spotify, dan Amazon.
+          </p>
 
-      <footer class="h-8 px-4 sm:px-8 border-t border-[#222] flex items-center justify-between text-[9px] text-[#444] font-mono shrink-0 bg-[#080808]">
-        <div class="flex gap-4">
-          <span class="hidden sm:inline">COORD: 34.22, 19.88</span>
-          <span>DATASET: SYNTHETIC_GAUSSIAN_01</span>
+          <div class="explain-highlight">
+            <p>
+              💡 <strong>Analogi Sederhana:</strong> Bayangkan kamu dan temanmu sama-sama suka film A, B, dan C. 
+              Lalu temanmu juga suka film D yang belum kamu tonton. 
+              Sistem akan merekomendasikan film D untukmu karena kalian punya selera yang mirip!
+            </p>
+          </div>
+
+          <h3>Bagaimana Cara Kerjanya?</h3>
+          <ol>
+            <li>
+              <strong>Kumpulkan Data Rating:</strong> Sistem mengumpulkan rating/penilaian yang diberikan 
+              setiap pengguna terhadap item (film, lagu, produk). Hasilnya berupa tabel (matriks) 
+              User × Item yang berisi nilai rating 1-5, dengan beberapa sel yang kosong (belum dirating).
+            </li>
+            <li>
+              <strong>Cari User yang Mirip:</strong> Untuk memprediksi rating User A, sistem mencari 
+              pengguna lain yang punya pola rating mirip dengan User A. 
+              Kemiripan diukur dengan melihat item-item yang sama-sama sudah di-rating.
+              Semakin mirip polanya, semakin tinggi <em>similarity score</em>-nya (0 sampai 1).
+            </li>
+            <li>
+              <strong>Prediksi Rating:</strong> Untuk item yang belum di-rating User A, sistem melihat 
+              rating yang diberikan user-user mirip terhadap item tersebut. 
+              Rating user yang lebih mirip diberi bobot lebih besar.
+            </li>
+            <li>
+              <strong>Berikan Rekomendasi:</strong> Item-item dengan prediksi rating tertinggi 
+              direkomendasikan kepada User A. Itulah mengapa Netflix bisa menyarankan film yang 
+              kemungkinan besar akan kamu sukai!
+            </li>
+          </ol>
+
+          <h3>Membaca Visualisasi</h3>
+          <ul>
+            <li>
+              <strong>Node Kiri (User):</strong> Setiap lingkaran di sisi kiri merepresentasikan seorang user. 
+              User target (yang ingin diberi rekomendasi) ditandai dengan warna kuning.
+            </li>
+            <li>
+              <strong>Node Kanan (Item):</strong> Setiap kotak di sisi kanan merepresentasikan item 
+              (film/lagu/produk). Garis yang menghubungkan user ke item menandakan user tersebut 
+              sudah memberikan rating.
+            </li>
+            <li>
+              <strong>Ketebalan Garis:</strong> Semakin tebal garis antara user dan item, semakin tinggi 
+              rating yang diberikan.
+            </li>
+            <li>
+              <strong>Garis Putus-putus Kuning:</strong> Menunjukkan prediksi rekomendasi — item yang 
+              belum di-rating oleh user target tapi diprediksi akan disukai berdasarkan user lain yang mirip.
+            </li>
+            <li>
+              <strong>Similarity Bar:</strong> Di sidebar kiri, bar chart menunjukkan seberapa mirip 
+              setiap user dengan user target. Semakin panjang bar = semakin mirip.
+            </li>
+          </ul>
+
+          <h3>Istilah-istilah Penting</h3>
+          <ul>
+            <li><strong>User-based CF:</strong> Mencari user mirip lalu menggunakan rating mereka untuk prediksi. Ini yang divisualisasikan di aplikasi ini.</li>
+            <li><strong>Item-based CF:</strong> Alih-alih mencari user mirip, mencari item yang mirip berdasarkan pola rating semua user.</li>
+            <li><strong>Sparsity (Kelangkaan):</strong> Persentase rating yang kosong. Semakin tinggi sparsity, semakin sulit merekomendasikan karena data yang tersedia sedikit.</li>
+            <li><strong>Cold Start Problem:</strong> Masalah saat user baru belum punya rating sama sekali, sehingga sistem kesulitan mencari user yang mirip.</li>
+          </ul>
+
+          <h3>Contoh Penggunaan di Dunia Nyata</h3>
+          <ul>
+            <li>🎬 <strong>Netflix:</strong> "Karena kamu menonton Breaking Bad, mungkin kamu suka Narcos"</li>
+            <li>🎵 <strong>Spotify:</strong> Playlist "Discover Weekly" yang dibuat berdasarkan user dengan selera musik serupa</li>
+            <li>🛒 <strong>Amazon / Shopee:</strong> "Pelanggan yang membeli ini juga membeli..."</li>
+            <li>📱 <strong>TikTok / YouTube:</strong> Algoritma For You Page yang mempelajari preferensi dari pola tontonan user lain</li>
+          </ul>
         </div>
-        <div class="flex gap-4 uppercase">
-          <span class="hidden sm:inline">Precision: 64-bit Float</span>
-          <span class="text-[#5eead4]">Hardware Acceleration Active</span>
+      </div>
+
+      <!-- Footer -->
+      <footer class="app-footer">
+        <div style="display:flex; gap:16px;">
+          <span>DATASET: SYNTHETIC_RATINGS</span>
+          <span>MODE: USER-BASED CF</span>
+        </div>
+        <div style="display:flex; gap:16px; text-transform:uppercase;">
+          <span>Ahmad Karta Nugraha — 714230035</span>
+          <span class="footer-status">● Engine Active</span>
         </div>
       </footer>
     </div>
-    
+
+    <!-- Tooltip -->
+    <div id="tooltip" class="tooltip"></div>
+
     <script type="module" src="./app.js"></script>
   </body>
 </html>

@@ -1,0 +1,1286 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Presentasi – Visualisasi Algoritma PCA | Ahmad Karta Nugraha</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cyan:   #5eead4;
+      --cyan-dim: rgba(94,234,212,0.15);
+      --white:  #f0f0f0;
+      --gray:   #888;
+      --dark:   #050505;
+      --card:   #0c0c0e;
+      --border: #1e1e1e;
+      --font-sans: 'Inter', sans-serif;
+      --font-serif: 'Playfair Display', serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      background: var(--dark);
+      color: var(--white);
+      font-family: var(--font-sans);
+      overflow: hidden;
+    }
+
+    /* ── DECK ── */
+    #deck {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 60px 80px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      transform: translateY(24px);
+      overflow: hidden;
+    }
+    .slide.active {
+      opacity: 1;
+      pointer-events: all;
+      transform: translateY(0);
+    }
+
+    /* dot-grid bg */
+    .slide::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(#1e1e1e 1px, transparent 1px);
+      background-size: 24px 24px;
+      opacity: 0.6;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* cyan left bar accent */
+    .slide::after {
+      content: '';
+      position: absolute;
+      left: 0; top: 10%; bottom: 10%;
+      width: 3px;
+      background: linear-gradient(to bottom, transparent, var(--cyan), transparent);
+      z-index: 0;
+    }
+
+    .slide > * { position: relative; z-index: 1; }
+
+    /* ── NAVIGATION ── */
+    #nav {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      z-index: 100;
+      background: rgba(12,12,14,0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      padding: 10px 20px;
+      border-radius: 999px;
+    }
+    .nav-btn {
+      background: none;
+      border: none;
+      color: var(--gray);
+      font-size: 18px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: color 0.2s, background 0.2s;
+      font-family: var(--font-sans);
+    }
+    .nav-btn:hover { color: var(--cyan); background: var(--cyan-dim); }
+    #slide-counter {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--gray);
+      min-width: 60px;
+      text-align: center;
+      letter-spacing: 0.1em;
+    }
+    .dot-nav { display: flex; gap: 6px; align-items: center; }
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--border);
+      border: 1px solid #333;
+      cursor: pointer;
+      transition: background 0.25s, transform 0.25s;
+    }
+    .dot.on { background: var(--cyan); transform: scale(1.4); border-color: var(--cyan); }
+
+    /* ── KEYBOARD HINT ── */
+    #kbd-hint {
+      position: fixed;
+      top: 20px;
+      right: 24px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: #333;
+      letter-spacing: 0.08em;
+      z-index: 100;
+    }
+
+    /* ── SLIDE NUMBER TAG ── */
+    .slide-tag {
+      position: absolute;
+      top: 28px; right: 36px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: #333;
+      text-transform: uppercase;
+      z-index: 2;
+    }
+
+    /* ═══════════════════════════
+       TYPOGRAPHY HELPERS
+    ═══════════════════════════ */
+    .label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      color: var(--gray);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    h1.hero {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: clamp(2.6rem, 5vw, 4.2rem);
+      font-weight: 700;
+      line-height: 1.1;
+      color: #fff;
+      margin-bottom: 24px;
+    }
+    h2.section-title {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .accent { color: var(--cyan); }
+    p.lead {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: #aaa;
+      max-width: 680px;
+    }
+    .mono { font-family: var(--font-mono); }
+
+    /* ── PILL / TAG ── */
+    .pill {
+      display: inline-block;
+      padding: 4px 12px;
+      border: 1px solid var(--cyan);
+      color: var(--cyan);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      border-radius: 999px;
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 24px 28px;
+    }
+    .card-grid {
+      display: grid;
+      gap: 20px;
+      width: 100%;
+    }
+
+    /* ─── SLIDE 1 – COVER ─── */
+    #s1 { align-items: flex-start; }
+    #s1 .cover-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      color: var(--cyan);
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    #s1 .cover-tag::before {
+      content: '';
+      display: inline-block;
+      width: 32px; height: 1px;
+      background: var(--cyan);
+    }
+    #s1 .meta {
+      margin-top: 40px;
+      display: flex;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    #s1 .meta-item { display: flex; flex-direction: column; gap: 4px; }
+    #s1 .meta-key {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: #444;
+      text-transform: uppercase;
+    }
+    #s1 .meta-val {
+      font-size: 13px;
+      color: #ccc;
+    }
+    #s1 .diamond {
+      width: 10px; height: 10px;
+      border: 1px solid var(--cyan);
+      transform: rotate(45deg);
+      margin-right: 6px;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    #s1 .diamond-fill {
+      width: 6px; height: 6px;
+      background: var(--cyan);
+      transform: rotate(45deg);
+      display: inline-block;
+      vertical-align: middle;
+      position: relative;
+      top: -1px;
+    }
+
+    /* ─── SLIDE 2 – APA ITU PCA ─── */
+    #s2 .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      width: 100%;
+      max-width: 1000px;
+    }
+
+    /* ─── SLIDE 3 – ALUR ALGORITMA ─── */
+    #s3 .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+      max-width: 780px;
+    }
+    .step-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      padding: 18px 22px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      transition: border-color 0.25s;
+    }
+    .step-row:hover { border-color: var(--cyan); }
+    .step-num {
+      flex-shrink: 0;
+      width: 36px; height: 36px;
+      border: 1px solid var(--cyan);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--cyan);
+    }
+    .step-body h4 { font-size: 14px; color: #fff; margin-bottom: 4px; }
+    .step-body p  { font-size: 12px; color: #777; line-height: 1.6; }
+    .step-body code {
+      background: #111;
+      color: var(--cyan);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 1px 5px;
+      border-radius: 2px;
+    }
+
+    /* ─── SLIDE 4 – MATRIKS KOVARIANS ─── */
+    #s4 .matrix-wrap {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    #s4 .matrix {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      border: 1px solid #333;
+      padding: 2px;
+      background: #111;
+    }
+    #s4 .m-cell {
+      background: var(--card);
+      padding: 14px 18px;
+      text-align: center;
+    }
+    #s4 .m-cell .label2 {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: #444;
+      display: block;
+      margin-bottom: 4px;
+    }
+    #s4 .m-cell .val {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      color: var(--cyan);
+    }
+    #s4 .m-cell.off .val { color: #aaa; }
+    .matrix-bracket-left, .matrix-bracket-right {
+      font-size: 80px;
+      color: #333;
+      line-height: 1;
+      font-weight: 100;
+    }
+    .eq-box {
+      background: #0c0c0c;
+      border: 1px solid #1a1a1a;
+      border-radius: 4px;
+      padding: 20px 28px;
+      text-align: center;
+    }
+    .eq-box .eq {
+      font-family: var(--font-mono);
+      font-size: 18px;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .eq-box .eq-desc {
+      font-size: 11px;
+      color: #555;
+    }
+
+    /* ─── SLIDE 5 – EIGENDECOMPOSITION ─── */
+    #s5 .eigen-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      width: 100%;
+      max-width: 900px;
+    }
+    #s5 .eigen-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 24px;
+    }
+    #s5 .eigen-card h4 {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gray);
+      margin-bottom: 12px;
+    }
+    #s5 .eigen-val {
+      font-family: var(--font-mono);
+      font-size: 32px;
+      font-weight: 500;
+    }
+    #s5 .eigen-val.pc1 { color: var(--cyan); }
+    #s5 .eigen-val.pc2 { color: #fff; }
+    #s5 .eigen-desc { font-size: 12px; color: #666; margin-top: 8px; line-height: 1.6; }
+    #s5 .bar-wrap { margin-top: 16px; }
+    #s5 .bar-track {
+      height: 6px;
+      background: #1a1a1a;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+    #s5 .bar-fill { height: 100%; border-radius: 3px; }
+    #s5 .bar-pct {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #666;
+    }
+    #s5 .formula-box {
+      grid-column: 1 / -1;
+      background: #070709;
+      border: 1px solid var(--border);
+      padding: 22px 28px;
+      border-radius: 4px;
+    }
+    #s5 .formula-box .formula {
+      font-family: var(--font-mono);
+      font-size: 20px;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    #s5 .formula-box .formula-desc {
+      font-size: 12px;
+      color: #666;
+      line-height: 1.7;
+    }
+
+    /* ─── SLIDE 6 – FITUR APLIKASI ─── */
+    #s6 .feat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      width: 100%;
+      max-width: 900px;
+    }
+    .feat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 22px 24px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      transition: border-color 0.25s, background 0.25s;
+    }
+    .feat-card:hover {
+      border-color: var(--cyan);
+      background: rgba(94,234,212,0.03);
+    }
+    .feat-icon {
+      width: 36px; height: 36px;
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+      border-radius: 4px;
+    }
+    .feat-card h4 { font-size: 13px; color: #fff; margin-bottom: 6px; }
+    .feat-card p  { font-size: 11px; color: #666; line-height: 1.6; }
+
+    /* ─── SLIDE 7 – SCREE PLOT ─── */
+    #s7 .scree-demo {
+      display: flex;
+      gap: 40px;
+      align-items: flex-end;
+      width: 100%;
+      max-width: 860px;
+      flex-wrap: wrap;
+    }
+    #s7 .scree-chart {
+      flex: 1;
+      min-width: 280px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 24px;
+    }
+    #s7 .chart-title {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: var(--gray);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    #s7 .bars {
+      display: flex;
+      align-items: flex-end;
+      height: 120px;
+      gap: 12px;
+    }
+    .scree-bar-wrap { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .scree-bar {
+      width: 48px;
+      border-radius: 2px 2px 0 0;
+      transition: opacity 0.25s;
+    }
+    .scree-bar-label { font-family: var(--font-mono); font-size: 10px; color: #666; }
+    .scree-bar-pct   { font-family: var(--font-mono); font-size: 11px; color: #aaa; }
+    #s7 .insight-list {
+      flex: 1;
+      min-width: 260px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .insight-row {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 14px 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+    .insight-icon { flex-shrink: 0; color: var(--cyan); font-size: 15px; }
+    .insight-text { font-size: 12px; color: #888; line-height: 1.6; }
+    .insight-text strong { color: #ccc; }
+
+    /* ─── SLIDE 8 – DEMO INTERAKTIF ─── */
+    #s8 .demo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      width: 100%;
+      max-width: 920px;
+    }
+    #s8 .param-list { display: flex; flex-direction: column; gap: 12px; }
+    .param-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 14px 18px;
+    }
+    .param-item .param-name {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: var(--gray);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .param-item .param-desc { font-size: 12px; color: #888; line-height: 1.5; }
+    #s8 .qr-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      text-align: center;
+    }
+    #s8 .qr-box .url {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--cyan);
+      word-break: break-all;
+    }
+    #s8 .qr-placeholder {
+      width: 120px; height: 120px;
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      color: #333;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      position: relative;
+      overflow: hidden;
+    }
+    /* QR-like pattern */
+    #s8 .qr-placeholder svg { opacity: 0.5; }
+
+    /* ─── SLIDE 9 – KESIMPULAN ─── */
+    #s9 .concl-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      width: 100%;
+      max-width: 760px;
+    }
+    .concl-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 16px 22px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      transition: border-color 0.25s;
+    }
+    .concl-item:hover { border-color: var(--cyan); }
+    .concl-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--cyan);
+      letter-spacing: 0.1em;
+      flex-shrink: 0;
+      padding-top: 2px;
+    }
+    .concl-text { font-size: 13px; color: #ccc; line-height: 1.6; }
+
+    /* ─── SLIDE 10 – PENUTUP ─── */
+    #s10 { align-items: center; text-align: center; }
+    #s10 .big-icon {
+      width: 72px; height: 72px;
+      border: 2px solid var(--cyan);
+      transform: rotate(45deg);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 32px;
+      position: relative;
+    }
+    #s10 .big-icon-inner {
+      width: 36px; height: 36px;
+      background: var(--cyan);
+      transform: rotate(0deg);
+    }
+    #s10 .tagline {
+      font-size: 13px;
+      color: #555;
+      margin-top: 24px;
+      font-family: var(--font-mono);
+      letter-spacing: 0.1em;
+    }
+
+    /* ─── PROGRESS BAR ─── */
+    #progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      background: linear-gradient(to right, var(--cyan), rgba(94,234,212,0.3));
+      transition: width 0.4s ease;
+      z-index: 200;
+    }
+
+    /* ─── FULLSCREEN TOGGLE ─── */
+    #btn-fs {
+      position: fixed;
+      top: 20px; left: 24px;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--gray);
+      font-size: 13px;
+      cursor: pointer;
+      padding: 5px 10px;
+      border-radius: 4px;
+      transition: border-color 0.2s, color 0.2s;
+      font-family: var(--font-mono);
+      letter-spacing: 0.05em;
+      z-index: 100;
+    }
+    #btn-fs:hover { border-color: var(--cyan); color: var(--cyan); }
+
+    /* ─── DIVIDER ─── */
+    .divider {
+      width: 40px; height: 1px;
+      background: var(--border);
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Progress bar -->
+<div id="progress"></div>
+
+<!-- Fullscreen button -->
+<button id="btn-fs">⛶ Fullscreen</button>
+
+<!-- Keyboard hint -->
+<div id="kbd-hint">← → / Space / F</div>
+
+<!-- ═══════════════════ DECK ═══════════════════ -->
+<div id="deck">
+
+  <!-- ── SLIDE 1: COVER ── -->
+  <section class="slide active" id="s1">
+    <div class="slide-tag">01 / 10</div>
+
+    <div class="cover-tag">Tugas Pemrograman Web — 714230035</div>
+
+    <h1 class="hero">
+      Visualisasi<br/>
+      Algoritma <span class="accent">PCA</span>
+    </h1>
+
+    <p class="lead">
+      Sebuah aplikasi web interaktif untuk memahami cara kerja
+      <strong style="color:#ccc">Principal Component Analysis</strong>
+      melalui animasi real-time dan kontrol parameter langsung di browser.
+    </p>
+
+    <div class="meta">
+      <div class="meta-item">
+        <span class="meta-key">Nama</span>
+        <span class="meta-val">Ahmad Karta Nugraha</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-key">NIM</span>
+        <span class="meta-val">714230035</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-key">Kelas</span>
+        <span class="meta-val">D-IV TI III-A</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-key">Versi Aplikasi</span>
+        <span class="meta-val mono" style="color:var(--cyan)">v1.2.4-stable</span>
+      </div>
+    </div>
+
+    <div style="margin-top:36px; display:flex; gap:8px; flex-wrap:wrap;">
+      <span class="pill">JavaScript ES Module</span>
+      <span class="pill">SVG Real-time</span>
+      <span class="pill">Tailwind CSS v4</span>
+      <span class="pill">Linear Algebra</span>
+    </div>
+  </section>
+
+  <!-- ── SLIDE 2: APA ITU PCA ── -->
+  <section class="slide" id="s2">
+    <div class="slide-tag">02 / 10</div>
+    <div class="label" style="align-self:flex-start;">Landasan Teori</div>
+    <h2 class="section-title" style="align-self:flex-start; max-width:600px;">
+      Apa itu <span class="accent">Principal Component Analysis?</span>
+    </h2>
+    <div class="divider"></div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="label">Definisi</div>
+        <p style="font-size:13px; color:#aaa; line-height:1.8;">
+          PCA adalah teknik statistik untuk <strong style="color:#fff">mereduksi dimensi</strong> data
+          tanpa kehilangan terlalu banyak informasi. Caranya dengan menemukan
+          <em>sumbu koordinat baru</em> yang memaksimalkan varians data.
+        </p>
+        <div style="margin-top:16px; padding:14px; background:#0a0a0a; border:1px solid var(--border); border-radius:3px;">
+          <span style="font-family:var(--font-mono); font-size:11px; color:var(--gray);">Tujuan Utama</span>
+          <ul style="margin-top:8px; padding-left:16px; font-size:12px; color:#777; line-height:2;">
+            <li>Mengurangi kompleksitas dataset</li>
+            <li>Menghilangkan redundansi antar variabel</li>
+            <li>Memudahkan visualisasi data dimensi tinggi</li>
+            <li>Menekan noise tanpa kehilangan sinyal utama</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="label">Analogi Sederhana</div>
+        <p style="font-size:13px; color:#aaa; line-height:1.8; margin-bottom:14px;">
+          Bayangkan Anda memotret bayangan sebuah benda 3D.
+          Foto (2D) adalah hasil <em>reduksi dimensi</em> yang masih mempertahankan bentuk esensial benda tersebut.
+        </p>
+        <p style="font-size:13px; color:#aaa; line-height:1.8;">
+          PCA bekerja persis seperti itu — ia mencari
+          <strong style="color:var(--cyan);">"sudut kamera terbaik"</strong>
+          agar proyeksi yang tersisa mengandung informasi maksimal.
+        </p>
+        <div style="margin-top:16px; display:flex; gap:10px; align-items:center;">
+          <div style="flex:1; height:4px; background:var(--cyan); border-radius:2px; opacity:0.9;"></div>
+          <span style="font-family:var(--font-mono); font-size:9px; color:var(--gray); white-space:nowrap;">PC1 (max variance)</span>
+        </div>
+        <div style="margin-top:6px; display:flex; gap:10px; align-items:center;">
+          <div style="flex:1; height:2px; background:#fff; border-radius:2px; opacity:0.4;"></div>
+          <span style="font-family:var(--font-mono); font-size:9px; color:var(--gray); white-space:nowrap;">PC2 (residual)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SLIDE 3: ALUR ALGORITMA ── -->
+  <section class="slide" id="s3">
+    <div class="slide-tag">03 / 10</div>
+    <div class="label" style="align-self:flex-start;">Langkah Perhitungan</div>
+    <h2 class="section-title" style="align-self:flex-start;">
+      Alur <span class="accent">Algoritma PCA</span>
+    </h2>
+    <div class="divider"></div>
+
+    <div class="steps">
+      <div class="step-row">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <h4>Mean Centering — Pusatkan Data</h4>
+          <p>Hitung rata-rata seluruh titik, lalu geser koordinat sehingga centroid berada tepat di (0, 0). Tanpa langkah ini, komponen utama akan bias ke arah mean.</p>
+        </div>
+      </div>
+
+      <div class="step-row">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <h4>Hitung Matriks Kovarians — <code>C</code></h4>
+          <p>Ukur seberapa besar dua dimensi "bergerak bersama". <code>VAR(X)</code>, <code>VAR(Y)</code>, dan <code>COV(X,Y)</code> membentuk matriks simetris 2×2.</p>
+        </div>
+      </div>
+
+      <div class="step-row">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <h4>Eigen-Decomposition — <code>C·v = λ·v</code></h4>
+          <p>Temukan eigenvector (arah komponen utama) dan eigenvalue (besar varians yang dijelaskan). Eigenvalue terbesar → PC1, sisanya → PC2.</p>
+        </div>
+      </div>
+
+      <div class="step-row">
+        <div class="step-num">04</div>
+        <div class="step-body">
+          <h4>Explained Variance Ratio — <code>λ / Σλ</code></h4>
+          <p>Hitung proporsi informasi setiap komponen. Jika PC1 ≥ 95%, maka PC2 dapat <strong style="color:var(--cyan);">direduksi</strong> dengan kehilangan informasi &lt;5%.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SLIDE 4: MATRIKS KOVARIANS ── -->
+  <section class="slide" id="s4">
+    <div class="slide-tag">04 / 10</div>
+    <div class="label" style="align-self:flex-start;">Detail Matematis</div>
+    <h2 class="section-title" style="align-self:flex-start;">
+      Matriks <span class="accent">Kovarians</span>
+    </h2>
+    <div class="divider"></div>
+
+    <div class="matrix-wrap">
+      <!-- Matrix C -->
+      <div style="text-align:center;">
+        <div style="font-family:var(--font-mono); font-size:12px; color:var(--gray); margin-bottom:12px; letter-spacing:0.15em;">C = COVARIANCE MATRIX</div>
+        <div style="display:flex; align-items:center; gap:4px; justify-content:center;">
+          <div class="matrix-bracket-left">[</div>
+          <div class="matrix">
+            <div class="m-cell">
+              <span class="label2">VAR(X) = σ²ₓ</span>
+              <span class="val">Cₓₓ</span>
+            </div>
+            <div class="m-cell off">
+              <span class="label2">COV(X,Y)</span>
+              <span class="val">Cₓᵧ</span>
+            </div>
+            <div class="m-cell off">
+              <span class="label2">COV(Y,X)</span>
+              <span class="val">Cᵧₓ</span>
+            </div>
+            <div class="m-cell">
+              <span class="label2">VAR(Y) = σ²ᵧ</span>
+              <span class="val">Cᵧᵧ</span>
+            </div>
+          </div>
+          <div class="matrix-bracket-right">]</div>
+        </div>
+        <p style="font-size:11px; color:#555; margin-top:8px; font-family:var(--font-mono);">Simetris: Cₓᵧ = Cᵧₓ</p>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:16px; max-width:340px;">
+        <div class="eq-box">
+          <div class="eq">Cₓₓ = Σ(xᵢ − x̄)² / (n−1)</div>
+          <div class="eq-desc">Varians dimensi X — seberapa lebar data tersebar di sumbu X</div>
+        </div>
+        <div class="eq-box">
+          <div class="eq">Cₓᵧ = Σ(xᵢ − x̄)(yᵢ − ȳ) / (n−1)</div>
+          <div class="eq-desc">Kovarians — kekuatan korelasi linier antara X dan Y</div>
+        </div>
+        <div style="padding:14px; background:rgba(94,234,212,0.06); border:1px solid rgba(94,234,212,0.2); border-radius:3px;">
+          <p style="font-size:12px; color:#aaa; line-height:1.7;">
+            Kovarians <strong style="color:var(--cyan);">besar</strong> → titik-titik tersusun diagonal → PCA sangat efektif untuk reduksi dimensi.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SLIDE 5: EIGENDECOMPOSITION ── -->
+  <section class="slide" id="s5">
+    <div class="slide-tag">05 / 10</div>
+    <div class="label" style="align-self:flex-start;">Inti Algoritma</div>
+    <h2 class="section-title" style="align-self:flex-start;">
+      Eigen-<span class="accent">Decomposition</span>
+    </h2>
+    <div class="divider"></div>
+
+    <div class="eigen-grid">
+      <div class="formula-box">
+        <div class="formula">C · v = λ · v</div>
+        <div class="formula-desc">
+          Matriks kovarians <strong style="color:#aaa;">C</strong> dikalikan vektor eigen <strong style="color:#aaa;">v</strong>
+          menghasilkan vektor yang searah dengan <strong style="color:#aaa;">v</strong> namun berskala sebesar eigenvalue <strong style="color:var(--cyan);">λ</strong>.
+          Ini berarti <strong style="color:var(--cyan);">v</strong> adalah arah di mana data "meregang" sebesar <strong style="color:var(--cyan);">λ</strong>.
+        </div>
+      </div>
+
+      <div class="eigen-card">
+        <h4>PC1 — Eigenvector Utama</h4>
+        <div class="eigen-val pc1">λ₁ (besar)</div>
+        <div class="eigen-desc">
+          Arah di mana varians data <strong style="color:#ccc;">MAKSIMAL</strong>.
+          Ditampilkan sebagai garis <span style="color:var(--cyan);">Cyan</span> di visualisasi.
+          Mempertahankan informasi terbesar.
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-track">
+            <div class="bar-fill" style="width:75%; background:var(--cyan);"></div>
+          </div>
+          <div class="bar-pct">~75%–95% varians dijelaskan</div>
+        </div>
+      </div>
+
+      <div class="eigen-card">
+        <h4>PC2 — Eigenvector Kedua</h4>
+        <div class="eigen-val pc2">λ₂ (kecil)</div>
+        <div class="eigen-desc">
+          Arah tegak lurus PC1. Menjelaskan sisa varians.
+          Ditampilkan sebagai garis <span style="color:#aaa;">Putih</span> di visualisasi.
+          Kandidat untuk direduksi.
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-track">
+            <div class="bar-fill" style="width:25%; background:#aaa; opacity:0.5;"></div>
+          </div>
+          <div class="bar-pct">~5%–25% varians tersisa</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SLIDE 6: FITUR APLIKASI ── -->
+  <section class="slide" id="s6">
+    <div class="slide-tag">06 / 10</div>
+    <div class="label" style="align-self:flex-start;">Implementasi</div>
+    <h2 class="section-title" style="align-self:flex-start;">
+      Fitur <span class="accent">Aplikasi</span>
+    </h2>
+    <div class="divider"></div>
+
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-icon">⚙️</div>
+        <div>
+          <h4>Kontrol Parameter Real-time</h4>
+          <p>4 slider interaktif: <strong>Density</strong> (10–1000 pts), <strong>Spread X</strong>, <strong>Spread Y</strong>, dan <strong>Rotation α</strong> (−90° hingga +90°). Grafik diperbarui seketika tanpa reload.</p>
+        </div>
+      </div>
+
+      <div class="feat-card">
+        <div class="feat-icon">📊</div>
+        <div>
+          <h4>Visualisasi SVG Dinamis</h4>
+          <p>Ribuan titik data Gaussian dirender via SVG langsung di DOM. Eigenvector ditampilkan sebagai panah beranimasi dengan <em>marker-end</em> yang berubah sesuai parameter.</p>
+        </div>
+      </div>
+
+      <div class="feat-card">
+        <div class="feat-icon">🔢</div>
+        <div>
+          <h4>Panel Eigen-Decomposition</h4>
+          <p>Menampilkan nilai eigenvalue λ₁ dan λ₂, persentase explained variance PC1 & PC2, serta bar chart mini (Scree Plot) yang diupdate secara live.</p>
+        </div>
+      </div>
+
+      <div class="feat-card">
+        <div class="feat-icon">📐</div>
+        <div>
+          <h4>Tabel Matriks Kovarians</h4>
+          <p>Nilai <code style="background:#111; color:var(--cyan); padding:1px 4px; font-family:var(--font-mono); font-size:10px;">VAR(X)</code>, <code style="background:#111; color:var(--cyan); padding:1px 4px; font-family:var(--font-mono); font-size:10px;">VAR(Y)</code>, dan <code style="background:#111; color:var(--cyan); padding:1px 4px; font-family:var(--font-mono); font-size:10px;">COV(X,Y)</code> tampil live di panel bawah layar.</p>
+        </div>
+      </div>
+
+      <div class="feat-card">
+        <div class="feat-icon">🔄</div>
+        <div>
+          <h4>Recalculate / Reseed Data</h4>
+          <p>Tombol <em>"Recalculate Projections"</em> men-generate ulang 1000 sampel Gaussian acak baru, sehingga pengguna dapat mengamati stabilitas PCA pada berbagai sampel.</p>
+        </div>
+      </div>
+
+      <div class="feat-card">
+        <div class="feat-icon">📖</div>
+        <div>
+          <h4>Halaman Penjelasan</h4>
+          <p>Tab "Penjelasan" berisi narasi edukatif tentang konsep PCA: definisi, langkah algoritma, cara membaca grafik, dan interpretasi Scree Plot — tanpa perlu meninggalkan aplikasi.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SLIDE 7: SCREE PLOT & INTERPRETASI ── -->
+  <section class="slide" id="s7">
+    <div class="slide-tag">07 / 10</div>
+    <div class="label" style="align-self:flex-start;">Analisis Hasil</div>
+    <h2 class="section-title" style="align-self:flex-start;">
+      Membaca <span class="accent">Scree Plot</span> & Explained Variance
+    </h2>
+    <div class="divider"></div>
+
+    <div class="scree-demo">
+      <div class="scree-chart" style="min-width:320px;">
+        <div class="chart-title">Contoh: Spread X=8, Spread Y=1, Rotation=30°</div>
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:4px;">
+          <span style="font-family:var(--font-mono); font-size:9px; color:#444;">100%</span>
+          <span style="font-family:var(--font-mono); font-size:9px; color:#444;">0%</span>
+        </div>
+        <div class="bars">
+          <div class="scree-bar-wrap">
+            <div class="scree-bar-pct">94.3%</div>
+            <div class="scree-bar" style="height:113px; background:var(--cyan); opacity:0.85;"></div>
+            <div class="scree-bar-label">PC1</div>
+          </div>
+          <div class="scree-bar-wrap">
+            <div class="scree-bar-pct">5.7%</div>
+            <div class="scree-bar" style="height:7px; background:var(--cyan); opacity:0.3;"></div>
+            <div class="scree-bar-label">PC2</div>
+          </div>
+        </div>
+        <div style="margin-top:16px; padding:12px; background:#0a0a0a; border:1px solid #1a1a1a; border-radius:3px;">
+          <p style="font-family:var(--font-mono); font-size:10px; color:#666;">
+            λ₁ / (λ₁ + λ₂) = <span style="color:var(--cyan);">0.943</span><br/>
+            λ₂ / (λ₁ + λ₂) = <span style="color:#aaa;">0.057</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="insight-list">
+        <div class="insight-row">
+          <div class="insight-icon">◆</div>
+          <div class="insight-text">
+            <strong>PC1 ≥ 95%</strong> → PC2 bisa dihapus (reduksi ke 1D) dengan kehilangan &lt;5% informasi. Cocok untuk data memanjang.
+          </div>
+        </div>
+        <div class="insight-row">
+          <div class="insight-icon">◆</div>
+          <div class="insight-text">
+            <strong>PC1 ≈ 50%</strong> → data berbentuk melingkar / isotropis. Kedua komponen sama pentingnya, reduksi tidak disarankan.
+          </div>
+        </div>
+        <div class="insight-row">
+          <div class="insight-icon">◆</div>
+          <div class="insight-text">
+            <strong>Rotation α naik</strong> → korelasi antara X dan Y bertambah → Cₓᵧ membesar → eigenvector PC1 berputar mengikuti arah data.
+          </div>
+        </div>
+        <div class="insight-row">
+          <div class="insight-icon">◆</div>
+          <div class="insight-text">
+            <strong>Density rendah</strong> → eigenvalue tidak stabil antar reseed. Density tinggi → hasil lebih konsisten dan terprediksi.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SLIDE 8: ARSITEKTUR TEKNIS ── -->
+  <section class="slide" id="s8">
+    <div class="slide-tag">08 / 10</div>
+    <div class="label" style="align-self:flex-start;">Arsitektur Teknis</div>
+    <h2 class="section-title" style="align-self:flex-start;">
+      Implementasi <span class="accent">Kode</span>
+    </h2>
+    <div class="divider"></div>
+
+    <div class="demo-grid">
+      <div>
+        <div style="font-family:var(--font-mono); font-size:10px; color:var(--gray); letter-spacing:0.2em; text-transform:uppercase; margin-bottom:12px;">Struktur File</div>
+        <div style="background:var(--card); border:1px solid var(--border); border-radius:4px; padding:20px; font-family:var(--font-mono); font-size:12px; line-height:2; color:#aaa;">
+          <div><span style="color:var(--cyan);">📄</span> index.html &nbsp;<span style="color:#444; font-size:10px;">— UI &amp; Layout</span></div>
+          <div><span style="color:var(--cyan);">📄</span> app.js &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#444; font-size:10px;">— State &amp; Rendering</span></div>
+          <div><span style="color:var(--cyan);">📄</span> mathUtils.js &nbsp;<span style="color:#444; font-size:10px;">— PCA Engine</span></div>
+          <div><span style="color:var(--cyan);">📄</span> styles.css &nbsp;&nbsp;<span style="color:#444; font-size:10px;">— Custom Styles</span></div>
+        </div>
+
+        <div style="margin-top:16px; font-family:var(--font-mono); font-size:10px; color:var(--gray); letter-spacing:0.2em; text-transform:uppercase; margin-bottom:12px;">Fungsi Kunci</div>
+        <div class="param-list">
+          <div class="param-item">
+            <div class="param-name">generateBaseData(n)</div>
+            <div class="param-desc">Generate n sampel distribusi Gaussian menggunakan metode Box-Muller transform.</div>
+          </div>
+          <div class="param-item">
+            <div class="param-name">computePCA(data)</div>
+            <div class="param-desc">Hitung mean, matriks kovarians, eigenvalue, dan eigenvector secara analitik (tanpa library eksternal).</div>
+          </div>
+          <div class="param-item">
+            <div class="param-name">updateView(data, pca)</div>
+            <div class="param-desc">Render ulang seluruh SVG, panel angka, dan bar chart berdasarkan hasil PCA terbaru.</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-family:var(--font-mono); font-size:10px; color:var(--gray); letter-spacing:0.2em; text-transform:uppercase; margin-bottom:12px;">Demo Aplikasi</div>
+        <div class="qr-box" style="height:100%;">
+          <div style="font-size:11px; color:#555; font-family:var(--font-mono);">AKSES LANGSUNG</div>
+          <svg width="140" height="140" viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:0.7;">
+            <!-- QR-like decorative boxes -->
+            <rect x="10" y="10" width="40" height="40" rx="3" stroke="#5eead4" stroke-width="2" fill="none"/>
+            <rect x="18" y="18" width="24" height="24" rx="1" fill="#5eead4" fill-opacity="0.3"/>
+            <rect x="90" y="10" width="40" height="40" rx="3" stroke="#5eead4" stroke-width="2" fill="none"/>
+            <rect x="98" y="18" width="24" height="24" rx="1" fill="#5eead4" fill-opacity="0.3"/>
+            <rect x="10" y="90" width="40" height="40" rx="3" stroke="#5eead4" stroke-width="2" fill="none"/>
+            <rect x="18" y="98" width="24" height="24" rx="1" fill="#5eead4" fill-opacity="0.3"/>
+            <!-- dots -->
+            <rect x="60" y="14" width="6" height="6" fill="#5eead4" fill-opacity="0.5"/>
+            <rect x="70" y="14" width="6" height="6" fill="#5eead4" fill-opacity="0.3"/>
+            <rect x="60" y="24" width="6" height="6" fill="#5eead4" fill-opacity="0.3"/>
+            <rect x="70" y="24" width="6" height="6" fill="#5eead4" fill-opacity="0.5"/>
+            <rect x="80" y="24" width="6" height="6" fill="#5eead4" fill-opacity="0.3"/>
+            <rect x="14" y="60" width="6" height="6" fill="#5eead4" fill-opacity="0.5"/>
+            <rect x="24" y="60" width="6" height="6" fill="#5eead4" fill-opacity="0.3"/>
+            <rect x="14" y="70" width="6" height="6" fill="#5eead4" fill-opacity="0.3"/>
+            <rect x="24" y="70" width="6" height="6" fill="#5eead4" fill-opacity="0.5"/>
+            <rect x="34" y="70" width="6" height="6" fill="#5eead4" fill-opacity="0.3"/>
+            <rect x="60" y="60" width="20" height="20" rx="2" fill="#5eead4" fill-opacity="0.2" stroke="#5eead4" stroke-width="1"/>
+            <rect x="94" y="60" width="6" height="6" fill="#5eead4" fill-opacity="0.5"/>
+            <rect x="104" y="60" width="6" height="6" fill="#5eead4" fill-opacity="0.3"/>
+            <rect x="114" y="60" width="6" height="6" fill="#5eead4" fill-opacity="0.4"/>
+            <rect x="94" y="70" width="6" height="6" fill="#5eead4" fill-opacity="0.3"/>
+            <rect x="104" y="70" width="6" height="6" fill="#5eead4" fill-opacity="0.5"/>
+            <rect x="60" y="94" width="6" height="6" fill="#5eead4" fill-opacity="0.5"/>
+            <rect x="70" y="94" width="6" height="6" fill="#5eead4" fill-opacity="0.3"/>
+            <rect x="80" y="94" width="6" height="6" fill="#5eead4" fill-opacity="0.4"/>
+            <rect x="60" y="104" width="6" height="6" fill="#5eead4" fill-opacity="0.3"/>
+            <rect x="70" y="104" width="6" height="6" fill="#5eead4" fill-opacity="0.5"/>
+            <rect x="80" y="104" width="6" height="6" fill="#5eead4" fill-opacity="0.3"/>
+            <rect x="94" y="94" width="36" height="36" rx="2" fill="#5eead4" fill-opacity="0.08" stroke="#5eead4" stroke-width="1" stroke-dasharray="3 2"/>
+          </svg>
+          <div class="url">d-iv-ti-iii-a-23-27.github.io<br/>714230035-Ahmad-Karta-Nugraha/</div>
+          <div style="font-size:10px; color:#555; font-family:var(--font-mono);">Buka di browser untuk demo langsung</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SLIDE 9: KESIMPULAN ── -->
+  <section class="slide" id="s9">
+    <div class="slide-tag">09 / 10</div>
+    <div class="label" style="align-self:flex-start;">Penutup</div>
+    <h2 class="section-title" style="align-self:flex-start;">
+      <span class="accent">Kesimpulan</span>
+    </h2>
+    <div class="divider"></div>
+
+    <div class="concl-list">
+      <div class="concl-item">
+        <div class="concl-num">01</div>
+        <div class="concl-text">
+          PCA adalah algoritma reduksi dimensi berbasis <strong>aljabar linear</strong> yang menemukan sumbu baru (principal components) sejajar dengan arah varians terbesar dalam data.
+        </div>
+      </div>
+      <div class="concl-item">
+        <div class="concl-num">02</div>
+        <div class="concl-text">
+          Aplikasi ini berhasil mengimplementasikan <strong>seluruh pipeline PCA</strong> — dari distribusi Gaussian, mean centering, matriks kovarians, hingga eigen-decomposition — murni menggunakan JavaScript tanpa library.
+        </div>
+      </div>
+      <div class="concl-item">
+        <div class="concl-num">03</div>
+        <div class="concl-text">
+          Melalui visualisasi interaktif, pengguna dapat secara langsung mengamati bahwa <strong>Rotation (korelasi)</strong> adalah faktor utama yang menentukan efektivitas PCA sebagai teknik reduksi.
+        </div>
+      </div>
+      <div class="concl-item">
+        <div class="concl-num">04</div>
+        <div class="concl-text">
+          Ketika <strong>Explained Variance PC1 ≥ 95%</strong>, reduksi ke satu dimensi dapat dilakukan dengan kehilangan informasi minimal — ini adalah inti kegunaan PCA di dunia nyata (Computer Vision, NLP, Bioinformatika).
+        </div>
+      </div>
+      <div class="concl-item">
+        <div class="concl-num">05</div>
+        <div class="concl-text">
+          Proyek ini menunjukkan bahwa konsep matematis abstrak dapat disajikan secara <strong>intuitif dan interaktif</strong> melalui web modern dengan teknik rendering SVG real-time.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SLIDE 10: PENUTUP ── -->
+  <section class="slide" id="s10">
+    <div class="slide-tag">10 / 10</div>
+
+    <div class="big-icon">
+      <div class="big-icon-inner"></div>
+    </div>
+
+    <div class="label" style="text-align:center; margin-bottom:16px;">Terima Kasih</div>
+    <h1 class="hero" style="font-size:clamp(2.2rem,4vw,3.6rem); text-align:center; max-width:680px;">
+      Visualisasi Algoritma <span class="accent">PCA</span>
+    </h1>
+
+    <div class="tagline" style="margin-top:16px;">
+      Ahmad Karta Nugraha &nbsp;·&nbsp; 714230035 &nbsp;·&nbsp; D-IV TI III-A
+    </div>
+
+    <div style="margin-top:40px; display:flex; gap:20px; flex-wrap:wrap; justify-content:center; align-items:center;">
+      <a href="./index.html" style="padding:12px 28px; background:var(--cyan); color:#000; font-family:var(--font-mono); font-size:12px; text-decoration:none; letter-spacing:0.1em; border-radius:2px; transition:opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+        Buka Aplikasi →
+      </a>
+      <div style="padding:12px 28px; border:1px solid var(--border); font-family:var(--font-mono); font-size:11px; color:var(--gray); letter-spacing:0.1em; border-radius:2px;">
+        v1.2.4-stable
+      </div>
+    </div>
+
+    <div class="tagline" style="margin-top:32px; color:#2a2a2a;">
+      Gunakan ← → atau Space untuk navigasi &nbsp;·&nbsp; F untuk Fullscreen
+    </div>
+  </section>
+
+</div><!-- /deck -->
+
+<!-- NAVIGATION -->
+<div id="nav">
+  <button class="nav-btn" id="btn-prev" title="Previous (←)">&#8592;</button>
+  <div class="dot-nav" id="dot-nav"></div>
+  <span id="slide-counter">01 / 10</span>
+  <button class="nav-btn" id="btn-next" title="Next (→)">&#8594;</button>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const TOTAL  = slides.length;
+  let   cur    = 0;
+
+  const dotNav   = document.getElementById('dot-nav');
+  const counter  = document.getElementById('slide-counter');
+  const progress = document.getElementById('progress');
+
+  // Build dots
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' on' : '');
+    d.addEventListener('click', () => goTo(i));
+    dotNav.appendChild(d);
+  });
+
+  function goTo(idx) {
+    slides[cur].classList.remove('active');
+    dotNav.children[cur].classList.remove('on');
+    cur = Math.max(0, Math.min(TOTAL - 1, idx));
+    slides[cur].classList.add('active');
+    dotNav.children[cur].classList.add('on');
+    counter.textContent = String(cur + 1).padStart(2,'0') + ' / ' + String(TOTAL).padStart(2,'0');
+    progress.style.width = ((cur + 1) / TOTAL * 100) + '%';
+  }
+
+  document.getElementById('btn-prev').addEventListener('click', () => goTo(cur - 1));
+  document.getElementById('btn-next').addEventListener('click', () => goTo(cur + 1));
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goTo(cur + 1); }
+    if (e.key === 'ArrowLeft')                    { e.preventDefault(); goTo(cur - 1); }
+    if (e.key === 'f' || e.key === 'F')           { toggleFS(); }
+    if (e.key === 'Home')                         { goTo(0); }
+    if (e.key === 'End')                          { goTo(TOTAL - 1); }
+  });
+
+  // Touch swipe
+  let touchStartX = 0;
+  document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
+  document.addEventListener('touchend',   e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 50) goTo(dx < 0 ? cur + 1 : cur - 1);
+  });
+
+  // Fullscreen
+  function toggleFS() {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{});
+    else document.exitFullscreen();
+  }
+  document.getElementById('btn-fs').addEventListener('click', toggleFS);
+
+  // Init progress
+  progress.style.width = (1 / TOTAL * 100) + '%';
+</script>
+</body>
+</html>
